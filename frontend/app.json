@@ -1,4 +1,6 @@
 {
-  "name": "frontend",
-  "displayName": "frontend"
+  "expo": {
+    "name": "material-inspector",
+    "slug": "material-inspector"
+  }
 }
