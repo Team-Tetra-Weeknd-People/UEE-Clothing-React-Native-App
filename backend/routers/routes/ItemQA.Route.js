@@ -8,6 +8,6 @@ router.post("/", ItemQAController.createItemQA);
 router.get("/getOne/:id", ItemQAController.getItemQA);
 router.put("/:id", ItemQAController.updateItemQA);
 router.delete("/:id", ItemQAController.deleteItemQA);
-router.get("/itemOrderID/:id", ItemQAController.getItemQAsByItemID);
+router.get("/itemID/:id", ItemQAController.getItemQAsByItemID);
 
 export default router;
