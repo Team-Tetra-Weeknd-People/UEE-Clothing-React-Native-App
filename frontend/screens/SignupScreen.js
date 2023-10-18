@@ -248,13 +248,16 @@ export default function SignupScreen() {
       <View className="h-full w-full flex justify-around pt-30">
         {/* title */}
         <View className="flex items-center">
-          <Animated.Text
-            entering={FadeInUp.duration(1000).springify()}
-            className="text-white font-bold tracking-wider text-5xl"
-            style={isKeyboardActive && { color: "#1D1D27", marginBottom: 120 }}
-          >
-            Sign Up
-          </Animated.Text>
+          {!isKeyboardActive && (
+            <Animated.View
+              entering={FadeInDown.delay(200).duration(1000).springify()}
+              className="flex items-center"
+            >
+              <Text className="text-4xl font-bold text-slate-900 text-white">
+                Create Account
+              </Text>
+            </Animated.View>
+          )}
         </View>
 
         {/* form */}
