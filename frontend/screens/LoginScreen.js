@@ -102,7 +102,7 @@ export default function LoginScreen() {
                 alert("Login Successful");
                 AsyncStorage.setItem("token", res.data.token);
                 AsyncStorage.setItem("user", res.data.user);
-                // navigation.navigate("ManufacturerHome");
+                navigation.navigate("ManufacturerMain");
               } else {
                 alert(res.data.message);
               }
