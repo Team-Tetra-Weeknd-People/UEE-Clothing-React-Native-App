@@ -62,8 +62,8 @@ export default function LoginScreen() {
     };
   }, []);
   const handleLogin = () => {
-    if (selectedType === "SUPPLIER") {
-      navigation.navigate("SellerMain");
+    if (selectedType === "SELLER") {
+      navigation.push("SellerMain");
     }
   };
   const [isFontLoaded, setIsFontLoaded] = useState(false);
@@ -197,7 +197,7 @@ export default function LoginScreen() {
             <TouchableOpacity
               className="w-full p-3 rounded-2xl mb-3 bg-slate-900"
               onPress={() => {
-                handleLogin;
+                handleLogin();
               }}
             >
               <Text
