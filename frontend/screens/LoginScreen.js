@@ -90,7 +90,6 @@ export default function LoginScreen() {
       email: email,
       password: password,
     };
-
     console.log(loginData);
 
     switch (selectedType) {
@@ -168,36 +167,6 @@ export default function LoginScreen() {
         break;
     }
   };
-
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const styles = StyleSheet.create({
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "white", // Change the background color as needed
-    },
-  });
-  useEffect(() => {
-    async function loadFont() {
-      await Font.loadAsync({
-        "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
-        "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
-        "Montserrat-ExtraBold": require("../assets/fonts/Montserrat-ExtraBold.ttf"),
-      });
-      setIsFontLoaded(true);
-    }
-
-    loadFont();
-  }, []);
-
-  if (!isFontLoaded) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1D1D27" />
-      </View>
-    );
-  }
 
   return (
     <View className="bg-white h-full w-full">

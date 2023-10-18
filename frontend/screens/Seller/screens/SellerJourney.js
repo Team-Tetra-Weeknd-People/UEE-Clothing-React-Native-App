@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Button, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const SellerJourney = () => {
     return (
