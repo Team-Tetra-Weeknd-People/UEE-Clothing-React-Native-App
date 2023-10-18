@@ -109,6 +109,18 @@ export default function SignupScreen() {
       return;
     }
 
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email");
+      return;
+    }
+
+    // password length check
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters long");
+      return;
+    }
+
     const user = {
       fname: firstName,
       lname: lastName,
