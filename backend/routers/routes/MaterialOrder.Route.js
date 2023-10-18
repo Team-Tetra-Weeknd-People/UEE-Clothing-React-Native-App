@@ -9,15 +9,15 @@ router.get("/getOne/:id", MaterialOrderController.getMaterialOrder);
 router.put("/:id", MaterialOrderController.updateMaterialOrder);
 router.delete("/:id", MaterialOrderController.deleteMaterialOrder);
 router.get(
-  "/materialID/:id",
+  "/supplierID/:id",
   MaterialOrderController.getMaterialOrdersBySupplierID
 );
 router.get(
-  "/supplierID/:id",
+  "/status/:status",
   MaterialOrderController.getMaterialOrdersByStatus
 );
 router.get(
-  "/materialID/:materialID/supplierID/:supplierID",
+  "/supplierID/:supplierID/status/:status",
   MaterialOrderController.getMaterialOrdersBySupplierIDAndStatus
 );
 
