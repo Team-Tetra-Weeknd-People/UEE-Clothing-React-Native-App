@@ -27,7 +27,7 @@ export default function SellerMain() {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
                     let rn = route.name;
-
+                    color = focused ? '#14D2B8' : '#1D1D27';
 
                     if (rn === SELLER_DASHBOARD) {
                         iconName = focused ? 'grid' : 'grid-outline';
@@ -40,11 +40,13 @@ export default function SellerMain() {
 
                     } else if (rn === SELLER_JOURNEY) {
                         iconName = focused ? 'pulse' : 'pulse-outline';
+                        
 
                     }
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
                 tabBarActiveTintColor: '#14D2B8',
+                tabBarInactiveTintColor: '#1D1D27',
                 tabBarLabelStyle: { paddingBottom: 10, fontSize: 12, fontFamily: 'Montserrat-SemiBold' },
                 tabBarStyle: { padding: 10, height: 75 },
                 headerTitleAlign: 'center',
