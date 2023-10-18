@@ -1,9 +1,10 @@
-import { View, Text, TextInput, TouchableOpacity, Image, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Font from 'expo-font';
 
 export default function LoginScreen() {
     const navigation = useNavigation();
@@ -34,9 +35,43 @@ export default function LoginScreen() {
             keyboardDidHideListener.remove();
         };
     }, []);
+    const handleLogin = () => {
+        if(selectedType === 'SUPPLIER'){
+            navigation.navigate('SellerMain');
+        }
+    };
+    const [isFontLoaded, setIsFontLoaded] = useState(false);
+    const styles = StyleSheet.create({
+        loadingContainer: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'white', // Change the background color as needed
+        },
+      });
+    useEffect(() => {
+      async function loadFont() {
+        await Font.loadAsync({
+            'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
+            'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
+            'Montserrat-ExtraBold': require('../assets/fonts/Montserrat-ExtraBold.ttf'),
+        });
+        setIsFontLoaded(true);
+      }
+  
+      loadFont();
+    }, []);
+  
+    if (!isFontLoaded) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#1D1D27" />
+        </View>
+      );
+    }
 
     return (
-        <View className="bg-white h-full w-full">
+        <View className="bg-white h-full w-full" >
             <StatusBar style="light" />
             {!isKeyboardActive && (
                 <>
@@ -73,7 +108,7 @@ export default function LoginScreen() {
                         }}
                     >
                         <Text style={{ fontSize: 4, fontWeight: 'bold', color: '#1D1D27' }}></Text>
-                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#1D1D27', fontFamily: 'Montserrat-Regular' }}>{type}</Text>
+                        <Text style={{ fontSize: 12, fontFamily: 'Montserrat-SemiBold', color: '#1D1D27' }}>{type}</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -113,8 +148,8 @@ export default function LoginScreen() {
                     <Animated.View
                         className="w-full"
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        <TouchableOpacity className="w-full p-3 rounded-2xl mb-3 bg-slate-900">
-                            <Text className="text-xl font-bold text-white text-center">Login</Text>
+                        <TouchableOpacity className="w-full p-3 rounded-2xl mb-3 bg-slate-900" onPress={()=>{handleLogin}}>
+                            <Text className="text-xl text-white text-center" style={{fontFamily: 'Montserrat-ExtraBold'}}>Login</Text>
                         </TouchableOpacity>
                     </Animated.View>
                     <Animated.View
@@ -122,7 +157,7 @@ export default function LoginScreen() {
                         className="flex-row justify-center">
                         <Text>Don't have an account? </Text>
                         <TouchableOpacity onPress={() => navigation.push('Signup')}>
-                            <Text className="text-sky-600">SignUp</Text>
+                            <Text className="text-sky-600" >SignUp</Text>
                         </TouchableOpacity>
                     </Animated.View>
                 </View>
