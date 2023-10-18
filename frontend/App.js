@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Font from 'expo-font';
+
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
-import * as Font from 'expo-font';
+import SellerMain from './screens/Seller/SellerMain';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +26,7 @@ function App() {
         await Font.loadAsync({
             'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
             'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+            'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
             'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
         });
         setIsFontLoaded(true);
@@ -38,28 +42,34 @@ function App() {
         </View>
       );
     }
+    
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName='Login'
         screenOptions={{
+          headerTitleAlign: 'center' ,
+          headerStyle: {
+            backgroundColor: '#1D1D27', 
+          },
           headerShown: true,
           headerTitle: () => (
             <Text style={{
-              fontSize: 24,
+              fontSize: 20,
               color: 'white',
               fontFamily: 'Montserrat-Regular',
+              paddingTop: 15,
+              letterSpacing: 1,
             }}>
-              Material Inspector
+              MATERIAL INSPECTOR
             </Text>
           ),
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#1D1D27',
-          },
         }}>
+          {/* common header for all screens */}
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
+        {/* seller */}
+        <Stack.Screen name="SellerMain" component={SellerMain} />
       </Stack.Navigator>
     </NavigationContainer>
   );
