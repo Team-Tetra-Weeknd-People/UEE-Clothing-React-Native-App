@@ -28,6 +28,7 @@ function App() {
             'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
             'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
             'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
+            'Aldrich-Regular': require('./assets/fonts/Aldrich-Regular.ttf'),
         });
         setIsFontLoaded(true);
       }
