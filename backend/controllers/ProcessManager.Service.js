@@ -85,7 +85,9 @@ export const loginProcessManager = async (req, res) => {
           "test",
           { expiresIn: "1h" }
         );
-        res.status(200).json({ result: processManager, token });
+        res
+          .status(200)
+          .json({ result: processManager, token, user: "PROCESSMANAGER" });
       } else {
         res.status(400).json({ message: "Invalid credentials." });
       }

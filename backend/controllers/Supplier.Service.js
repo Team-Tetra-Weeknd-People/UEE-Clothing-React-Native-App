@@ -80,7 +80,7 @@ export const loginSupplier = async (req, res) => {
           "test",
           { expiresIn: "1h" }
         );
-        res.status(200).json({ result: supplier, token });
+        res.status(200).json({ result: supplier, token, user: "SUPPLIER" });
       } else {
         res.status(400).json({ message: "Invalid credentials" });
       }

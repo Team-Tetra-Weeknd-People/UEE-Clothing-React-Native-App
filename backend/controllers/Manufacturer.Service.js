@@ -85,7 +85,9 @@ export const loginManufacturer = async (req, res) => {
           "test",
           { expiresIn: "1h" }
         );
-        res.status(200).json({ result: manufacturer, token });
+        res
+          .status(200)
+          .json({ result: manufacturer, token, user: "MANUFACTURER" });
       } else {
         res.status(400).json({ message: "Invalid credentials" });
       }
