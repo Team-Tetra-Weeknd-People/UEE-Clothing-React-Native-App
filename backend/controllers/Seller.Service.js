@@ -79,7 +79,7 @@ export const loginSeller = async (req, res) => {
           "test",
           { expiresIn: "1h" }
         );
-        res.status(200).json({ result: seller, token });
+        res.status(200).json({ result: seller, token, user: "SELLER" });
       } else {
         res.status(400).json({ message: "Invalid credentials" });
       }
