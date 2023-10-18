@@ -55,10 +55,10 @@ export default function LoginScreen() {
         setIsKeyboardActive(false);
       }
     );
+
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
-
     };
   }, []);
   const handleLogin = () => {
@@ -170,42 +170,6 @@ export default function LoginScreen() {
           >
             Login
           </Animated.Text>
-                {/* Form */}
-                <View className="flex items-center mx-5 space-y-4">
-                    <Animated.View
-                        entering={FadeInDown.duration(1000).springify()}
-                        className="bg-black/5 p-5 rounded-2xl w-full">
-                        <TextInput
-                            placeholder="Email"
-                            placeholderTextColor={'gray'}
-                        />
-                    </Animated.View>
-                    <Animated.View
-                        entering={FadeInDown.delay(200).duration(1000).springify()}
-                        className="bg-black/5 p-5 rounded-2xl w-full mb-3">
-                        <TextInput
-                            placeholder="Password"
-                            placeholderTextColor={'gray'}
-                            secureTextEntry
-                        />
-                    </Animated.View>
-                    <Animated.View
-                        className="w-full"
-                        entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        <TouchableOpacity className="w-full p-3 rounded-2xl mb-3 bg-slate-900" onPress={()=>{handleLogin()}}>
-                            <Text className="text-xl text-white text-center" style={{fontFamily: 'Montserrat-ExtraBold'}}>Login</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
-                    <Animated.View
-                        entering={FadeInDown.delay(600).duration(1000).springify()}
-                        className="flex-row justify-center">
-                        <Text>Don't have an account? </Text>
-                        <TouchableOpacity onPress={() => navigation.push('Signup')}>
-                            <Text className="text-sky-600" >SignUp</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
-                </View>
-            </View>
         </View>
 
         {/* Form */}
