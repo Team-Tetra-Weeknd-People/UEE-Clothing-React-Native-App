@@ -36,8 +36,8 @@ export default function LoginScreen() {
         };
     }, []);
     const handleLogin = () => {
-        if(selectedType === 'SUPPLIER'){
-            navigation.navigate('SellerMain');
+        if(selectedType === 'SELLER'){
+            navigation.push('SellerMain');
         }
     };
     const [isFontLoaded, setIsFontLoaded] = useState(false);
@@ -148,7 +148,7 @@ export default function LoginScreen() {
                     <Animated.View
                         className="w-full"
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        <TouchableOpacity className="w-full p-3 rounded-2xl mb-3 bg-slate-900" onPress={()=>{handleLogin}}>
+                        <TouchableOpacity className="w-full p-3 rounded-2xl mb-3 bg-slate-900" onPress={()=>{handleLogin()}}>
                             <Text className="text-xl text-white text-center" style={{fontFamily: 'Montserrat-ExtraBold'}}>Login</Text>
                         </TouchableOpacity>
                     </Animated.View>
