@@ -21,7 +21,9 @@ import Animated, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from "expo-font";
 
-import ManufacturerService from "../services/Manufacturer.Service";
+import ManufacturerService, {
+  loginManufacturer,
+} from "../services/Manufacturer.Service";
 import SupplierService from "../services/Supplier.Service";
 import SellerService from "../services/Seller.Service";
 import ProcessManagerService from "../services/ProcessManager.Service";
@@ -30,6 +32,9 @@ export default function LoginScreen() {
   const navigation = useNavigation();
   const [isKeyboardActive, setIsKeyboardActive] = useState(false);
   const [selectedType, setSelectedType] = useState("SUPPLIER"); // State to store the selected type
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // Define the available user types
   const userTypes = ["SUPPLIER", "MANUFACTURER", "SELLER", "PROCESS MANAGER"];
@@ -62,10 +67,108 @@ export default function LoginScreen() {
     };
   }, []);
   const handleLogin = () => {
-    if (selectedType === "SELLER") {
-      navigation.push("SellerMain");
+    // check all fields are filled
+    if (email === "" || password === "") {
+      alert("Please fill all fields");
+      return;
+    }
+
+    // check if email is valid
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email");
+      return;
+    }
+
+    // password length check
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters long");
+      return;
+    }
+
+    const loginData = {
+      email: email,
+      password: password,
+    };
+
+    console.log(loginData);
+
+    switch (selectedType) {
+      case "MANUFACTURER":
+        ManufacturerService,
+          loginManufacturer(loginData)
+            .then((res) => {
+              if (res.status === 200) {
+                alert("Login Successful");
+                AsyncStorage.setItem("token", res.data.token);
+                AsyncStorage.setItem("user", res.data.user);
+                // navigation.navigate("ManufacturerHome");
+              } else {
+                alert(res.data.message);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              alert("Please Check Email & Password");
+            });
+        break;
+      case "SUPPLIER":
+        SupplierService.loginSupplier(loginData)
+          .then((res) => {
+            if (res.status === 200) {
+              alert("Login Successful");
+              AsyncStorage.setItem("token", res.data.token);
+              AsyncStorage.setItem("user", res.data.user);
+              // navigation.navigate("SupplierHome");
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("Please Check Email & Password");
+          });
+        break;
+      case "SELLER":
+        SellerService.loginSeller(loginData)
+          .then((res) => {
+            if (res.status === 200) {
+              alert("Login Successful");
+              AsyncStorage.setItem("token", res.data.token);
+              AsyncStorage.setItem("user", res.data.user);
+              navigation.navigate("SellerMain");
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("Please Check Email & Password");
+          });
+        break;
+      case "PROCESS MANAGER":
+        ProcessManagerService.loginProcessManager(loginData)
+          .then((res) => {
+            if (res.status === 200) {
+              alert("Login Successful");
+              AsyncStorage.setItem("token", res.data.token);
+              AsyncStorage.setItem("user", res.data.user);
+              // navigation.navigate("ProcessManagerHome");
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("Please Check Email & Password");
+          });
+        break;
+      default:
+        alert("Something went wrong");
+        break;
     }
   };
+
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const styles = StyleSheet.create({
     loadingContainer: {
@@ -178,7 +281,11 @@ export default function LoginScreen() {
             entering={FadeInDown.duration(1000).springify()}
             className="bg-black/5 p-5 rounded-2xl w-full"
           >
-            <TextInput placeholder="Email" placeholderTextColor={"gray"} />
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor={"gray"}
+              onChangeText={(text) => setEmail(text)}
+            />
           </Animated.View>
           <Animated.View
             entering={FadeInDown.delay(200).duration(1000).springify()}
@@ -187,6 +294,7 @@ export default function LoginScreen() {
             <TextInput
               placeholder="Password"
               placeholderTextColor={"gray"}
+              onChangeText={(text) => setPassword(text)}
               secureTextEntry
             />
           </Animated.View>
