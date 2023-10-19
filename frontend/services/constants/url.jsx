@@ -37,10 +37,8 @@ export const MATERIAL_URL = `${BASE_URL}/materials`;
 export const MATERIAL_ID_URL = `${BASE_URL}/materials/`;
 export const MATERIAL_GET_ONE_URL = (id) =>
   `${BASE_URL}/materials/getOne/${id}`;
-export const MATERIAL_GET_BY_MANUFACTURER_URL = (id) =>
-  `${BASE_URL}/materials/getByManufacturer/${id}`;
-export const MATERIAL_GET_BY_MATERIAL_URL = (id) =>
-  `${BASE_URL}/materials/getByMaterial/${id}`;
+export const MATERIAL_GET_BY_SUPPLIER_URL = (id) =>
+  `${BASE_URL}/materials/getBySupplier/${id}`;
 
 export const MATERIAL_ORDER_URL = `${BASE_URL}/materialOrders`;
 export const MATERIAL_ORDER_ID_URL = `${BASE_URL}/materialOrders/`;
