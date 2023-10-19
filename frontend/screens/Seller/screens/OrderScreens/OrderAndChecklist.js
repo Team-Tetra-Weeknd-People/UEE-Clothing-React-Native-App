@@ -15,13 +15,14 @@ const OrderAndChecklist = () => {
         // For example, navigate to another screen.
         // navigation.navigate('AnotherScreen');
         console.log('Button clicked');
+        navigation.navigate('MarkAsDefect', {orderId: orderId});
     };
     return (
         <ScrollView style={styles.container}>
             <View style={styles.headerContainer}>
                 <Text style={styles.title}>ORDER : {orderId}</Text>
                 <GreenButton title="Order Journey" onPress={handleButtonClick} />
-                {/* <SlateButton title="Mark as Defect" onPress={handleButtonClick} /> */}
+                <SlateButton title="Mark as Defect" onPress={handleButtonClick} />
             </View>
             {/* Headers */}
             <View style={styles.tableHeader}>
