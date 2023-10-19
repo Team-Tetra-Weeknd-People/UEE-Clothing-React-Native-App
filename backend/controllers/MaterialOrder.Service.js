@@ -1,7 +1,7 @@
 import MaterialOrder from "../models/MaterialOrder.Model.js";
 import Material from "../models/Material.Model.js";
 import MaterialQA from "../models/MaterialQA.Model.js";
-import MaterialQAComplain from "../models/MaterialQAComplain.Model.js";
+import MaterialQAComplain from "../models/MaterialQAComplaint.Model.js";
 import Supplier from "../models/Supplier.Model.js";
 import Manufacturer from "../models/Manufacturer.Model.js";
 
