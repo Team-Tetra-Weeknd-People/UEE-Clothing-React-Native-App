@@ -21,7 +21,7 @@ export const getMaterialOrders = async (req, res) => {
       const materialQAs = await MaterialQA.find({
         materialOrderID: materialOrders[i]._id,
       });
-      materialOrders[i].materialQAs = materialQAs;
+      materialOrders[i].materialQA = materialQAs;
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });
@@ -50,7 +50,7 @@ export const getMaterialOrder = async (req, res) => {
     const materialQAs = await MaterialQA.find({
       materialOrderID: materialOrder._id,
     });
-    materialOrder.materialQAs = materialQAs;
+    materialOrder.materialQA = materialQAs;
     const manufacturer = await Manufacturer.find({
       _id: materialOrder.manufacturerID,
     });
@@ -128,7 +128,7 @@ export const getMaterialOrdersBySupplierID = async (req, res) => {
       const materialQAs = await MaterialQA.find({
         materialOrderID: materialOrders[i]._id,
       });
-      materialOrders[i].materialQAs = materialQAs;
+      materialOrders[i].materialQA = materialQAs;
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });
@@ -162,7 +162,7 @@ export const getMaterialOrdersByStatus = async (req, res) => {
       const materialQAs = await MaterialQA.find({
         materialOrderID: materialOrders[i]._id,
       });
-      materialOrders[i].materialQAs = materialQAs;
+      materialOrders[i].materialQA = materialQAs;
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });
@@ -199,7 +199,7 @@ export const getMaterialOrdersBySupplierIDAndStatus = async (req, res) => {
       const materialQAs = await MaterialQA.find({
         materialOrderID: materialOrders[i]._id,
       });
-      materialOrders[i].materialQAs = materialQAs;
+      materialOrders[i].materialQA = materialQAs;
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });

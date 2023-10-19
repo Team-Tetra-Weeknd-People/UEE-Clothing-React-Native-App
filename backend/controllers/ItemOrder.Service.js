@@ -17,7 +17,7 @@ export const getItemOrders = async (req, res) => {
       });
       itemOrders[i].manufacturer = manufacturer[0];
       const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
-      itemOrders[i].itemQAs = itemQAs;
+      itemOrders[i].itemQA = itemQAs;
       const seller = await Seller.find({ _id: itemOrders[i].sellerID });
       itemOrders[i].seller = seller[0];
       const QAComplain = await ItemQAComplain.find({
@@ -42,7 +42,7 @@ export const getItemOrder = async (req, res) => {
     });
     itemOrder.manufacturer = manufacturer[0];
     const itemQAs = await ItemQA.find({ itemOrderID: itemOrder._id });
-    itemOrder.itemQAs = itemQAs;
+    itemOrder.itemQA = itemQAs;
     const seller = await Seller.find({ _id: itemOrder.sellerID });
     itemOrder.seller = seller[0];
     const QAComplain = await ItemQAComplain.find({
@@ -109,7 +109,7 @@ export const getItemOrdersByManufacturerID = async (req, res) => {
       });
       itemOrders[i].manufacturer = manufacturer[0];
       const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
-      itemOrders[i].itemQAs = itemQAs;
+      itemOrders[i].itemQA = itemQAs;
       const seller = await Seller.find({ _id: itemOrders[i].sellerID });
       itemOrders[i].seller = seller[0];
       const QAComplain = await ItemQAComplain.find({
@@ -137,15 +137,15 @@ export const getItemOrdersByStatus = async (req, res) => {
       });
       itemOrders[i].manufacturer = manufacturer[0];
       const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
-      itemOrders[i].itemQAs = itemQAs;
+      itemOrders[i].itemQA = itemQAs;
       const seller = await Seller.find({ _id: itemOrders[i].sellerID });
       itemOrders[i].seller = seller[0];
       const QAComplain = await ItemQAComplain.find({
         itemOrderID: itemOrders[i]._id,
       });
       itemOrders[i].QAComplain = QAComplain;
-      res.status(200).json(itemOrders);
     }
+    res.status(200).json(itemOrders);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -168,7 +168,7 @@ export const getItemOrdersByManufacturerIDAndStatus = async (req, res) => {
       });
       itemOrders[i].manufacturer = manufacturer[0];
       const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
-      itemOrders[i].itemQAs = itemQAs;
+      itemOrders[i].itemQA = itemQAs;
       const seller = await Seller.find({ _id: itemOrders[i].sellerID });
       itemOrders[i].seller = seller[0];
       const QAComplain = await ItemQAComplain.find({
