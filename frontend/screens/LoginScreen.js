@@ -28,6 +28,8 @@ import SupplierService from "../services/Supplier.Service";
 import SellerService from "../services/Seller.Service";
 import ProcessManagerService from "../services/ProcessManager.Service";
 
+import WakeUpService from "../services/WakeUp.Service";
+
 export default function LoginScreen() {
   const navigation = useNavigation();
   const [isKeyboardActive, setIsKeyboardActive] = useState(false);
@@ -45,6 +47,10 @@ export default function LoginScreen() {
     // Store the selected type in AsyncStorage
     AsyncStorage.setItem("userType", type);
   };
+
+  useEffect(() => {
+    WakeUpService.wakeUp();
+  }, []);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
