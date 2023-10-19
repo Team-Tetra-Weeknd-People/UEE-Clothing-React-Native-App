@@ -1,7 +1,9 @@
 import ItemOrder from "../models/ItemOrder.Model.js";
 import Item from "../models/Item.Model.js";
 import ItemQA from "../models/ItemQA.Model.js";
+import ItemQAComplain from "../models/ItemQAComplain.Model.js";
 import Manufacturer from "../models/Manufacturer.Model.js";
+import Seller from "../models/Seller.Model.js";
 
 // Get all itemOrders
 export const getItemOrders = async (req, res) => {
@@ -16,6 +18,12 @@ export const getItemOrders = async (req, res) => {
       itemOrders[i].manufacturer = manufacturer[0];
       const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
       itemOrders[i].itemQAs = itemQAs;
+      const seller = await Seller.find({ _id: itemOrders[i].sellerID });
+      itemOrders[i].seller = seller[0];
+      const QAComplain = await ItemQAComplain.find({
+        itemOrderID: itemOrders[i]._id,
+      });
+      itemOrders[i].QAComplain = QAComplain;
     }
     res.status(200).json(itemOrders);
   } catch (error) {
@@ -33,6 +41,14 @@ export const getItemOrder = async (req, res) => {
       _id: itemOrder.manufacturerID,
     });
     itemOrder.manufacturer = manufacturer[0];
+    const itemQAs = await ItemQA.find({ itemOrderID: itemOrder._id });
+    itemOrder.itemQAs = itemQAs;
+    const seller = await Seller.find({ _id: itemOrder.sellerID });
+    itemOrder.seller = seller[0];
+    const QAComplain = await ItemQAComplain.find({
+      itemOrderID: itemOrder._id,
+    });
+    itemOrder.QAComplain = QAComplain;
     res.status(200).json(itemOrder);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -88,6 +104,18 @@ export const getItemOrdersByManufacturerID = async (req, res) => {
     for (let i = 0; i < itemOrders.length; i++) {
       const item = await Item.find({ _id: itemOrders[i].itemID });
       itemOrders[i].item = item[0];
+      const manufacturer = await Manufacturer.find({
+        _id: itemOrders[i].manufacturerID,
+      });
+      itemOrders[i].manufacturer = manufacturer[0];
+      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      itemOrders[i].itemQAs = itemQAs;
+      const seller = await Seller.find({ _id: itemOrders[i].sellerID });
+      itemOrders[i].seller = seller[0];
+      const QAComplain = await ItemQAComplain.find({
+        itemOrderID: itemOrders[i]._id,
+      });
+      itemOrders[i].QAComplain = QAComplain;
     }
     res.status(200).json(itemOrders);
   } catch (error) {
@@ -108,6 +136,14 @@ export const getItemOrdersByStatus = async (req, res) => {
         _id: itemOrders[i].manufacturerID,
       });
       itemOrders[i].manufacturer = manufacturer[0];
+      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      itemOrders[i].itemQAs = itemQAs;
+      const seller = await Seller.find({ _id: itemOrders[i].sellerID });
+      itemOrders[i].seller = seller[0];
+      const QAComplain = await ItemQAComplain.find({
+        itemOrderID: itemOrders[i]._id,
+      });
+      itemOrders[i].QAComplain = QAComplain;
       res.status(200).json(itemOrders);
     }
   } catch (error) {
@@ -127,6 +163,18 @@ export const getItemOrdersByManufacturerIDAndStatus = async (req, res) => {
     for (let i = 0; i < itemOrders.length; i++) {
       const item = await Item.find({ _id: itemOrders[i].itemID });
       itemOrders[i].item = item[0];
+      const manufacturer = await Manufacturer.find({
+        _id: itemOrders[i].manufacturerID,
+      });
+      itemOrders[i].manufacturer = manufacturer[0];
+      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      itemOrders[i].itemQAs = itemQAs;
+      const seller = await Seller.find({ _id: itemOrders[i].sellerID });
+      itemOrders[i].seller = seller[0];
+      const QAComplain = await ItemQAComplain.find({
+        itemOrderID: itemOrders[i]._id,
+      });
+      itemOrders[i].QAComplain = QAComplain;
     }
     res.status(200).json(itemOrders);
   } catch (error) {
