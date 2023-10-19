@@ -1,7 +1,7 @@
 import ItemOrder from "../models/ItemOrder.Model.js";
 import Item from "../models/Item.Model.js";
 import ItemQA from "../models/ItemQA.Model.js";
-import ItemQAComplain from "../models/ItemQAComplain.Model.js";
+import ItemQAComplain from "../models/ItemQAComplaint.Model.js";
 import Manufacturer from "../models/Manufacturer.Model.js";
 import Seller from "../models/Seller.Model.js";
 
