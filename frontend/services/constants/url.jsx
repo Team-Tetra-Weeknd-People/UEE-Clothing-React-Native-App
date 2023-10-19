@@ -4,6 +4,11 @@ export const WAKE_UP_URL = `https://uee-mobile-backend.onrender.com/`;
 
 export const ITEMS_URL = `${BASE_URL}/items`;
 export const ITEMS_ID_URL = `${BASE_URL}/items/`;
+export const ITEM_GET_ONE_URL = (id) => `${BASE_URL}/items/getOne/${id}`;
+export const ITEM_GET_BY_MANUFACTURER_URL = (id) =>
+  `${BASE_URL}/items/getByManufacturer/${id}`;
+export const ITEM_GET_BY_MATERIAL_URL = (id) =>
+  `${BASE_URL}/items/getByMaterial/${id}`;
 
 export const ITEM_ORDER_URL = `${BASE_URL}/itemOrders`;
 export const ITEM_ORDER_ID_URL = `${BASE_URL}/itemOrders/`;
@@ -30,6 +35,12 @@ export const ITEM_QA_COMPLAINTS_ORDER_URL = (id) =>
 
 export const MATERIAL_URL = `${BASE_URL}/materials`;
 export const MATERIAL_ID_URL = `${BASE_URL}/materials/`;
+export const MATERIAL_GET_ONE_URL = (id) =>
+  `${BASE_URL}/materials/getOne/${id}`;
+export const MATERIAL_GET_BY_MANUFACTURER_URL = (id) =>
+  `${BASE_URL}/materials/getByManufacturer/${id}`;
+export const MATERIAL_GET_BY_MATERIAL_URL = (id) =>
+  `${BASE_URL}/materials/getByMaterial/${id}`;
 
 export const MATERIAL_ORDER_URL = `${BASE_URL}/materialOrders`;
 export const MATERIAL_ORDER_ID_URL = `${BASE_URL}/materialOrders/`;
