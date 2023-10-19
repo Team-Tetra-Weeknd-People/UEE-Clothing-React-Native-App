@@ -135,7 +135,7 @@ export default function LoginScreen() {
               alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
-              navigation.navigate("SellerMain");
+              navigation.navigate("SellerMain", {seller : res.data.result});
             } else {
               alert(res.data.message);
             }
