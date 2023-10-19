@@ -1,6 +1,9 @@
 import MaterialOrder from "../models/MaterialOrder.Model.js";
 import Material from "../models/Material.Model.js";
+import MaterialQA from "../models/MaterialQA.Model.js";
+import MaterialQAComplain from "../models/MaterialQAComplain.Model.js";
 import Supplier from "../models/Supplier.Model.js";
+import Manufacturer from "../models/Manufacturer.Model.js";
 
 // Get all materialOrders
 export const getMaterialOrders = async (req, res) => {
@@ -15,6 +18,18 @@ export const getMaterialOrders = async (req, res) => {
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+      const materialQAs = await MaterialQA.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].materialQAs = materialQAs;
+      const manufacturer = await Manufacturer.find({
+        _id: materialOrders[i].manufacturerID,
+      });
+      materialOrders[i].manufacturer = manufacturer[0];
+      const QAComplain = await MaterialQAComplain.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].QAComplain = QAComplain;
     }
     res.status(200).json(materialOrders);
   } catch (error) {
@@ -32,6 +47,19 @@ export const getMaterialOrder = async (req, res) => {
     materialOrder.material = material[0];
     const supplier = await Supplier.find({ _id: materialOrder.supplierID });
     materialOrder.supplier = supplier[0];
+    const materialQAs = await MaterialQA.find({
+      materialOrderID: materialOrder._id,
+    });
+    materialOrder.materialQAs = materialQAs;
+    const manufacturer = await Manufacturer.find({
+      _id: materialOrder.manufacturerID,
+    });
+    materialOrder.manufacturer = manufacturer[0];
+    const QAComplain = await MaterialQAComplain.find({
+      materialOrderID: materialOrder._id,
+    });
+    materialOrder.QAComplain = QAComplain;
+
     res.status(200).json(materialOrder);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -97,6 +125,18 @@ export const getMaterialOrdersBySupplierID = async (req, res) => {
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+      const materialQAs = await MaterialQA.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].materialQAs = materialQAs;
+      const manufacturer = await Manufacturer.find({
+        _id: materialOrders[i].manufacturerID,
+      });
+      materialOrders[i].manufacturer = manufacturer[0];
+      const QAComplain = await MaterialQAComplain.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].QAComplain = QAComplain;
     }
     res.status(200).json(materialOrders);
   } catch (error) {
@@ -119,6 +159,18 @@ export const getMaterialOrdersByStatus = async (req, res) => {
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+      const materialQAs = await MaterialQA.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].materialQAs = materialQAs;
+      const manufacturer = await Manufacturer.find({
+        _id: materialOrders[i].manufacturerID,
+      });
+      materialOrders[i].manufacturer = manufacturer[0];
+      const QAComplain = await MaterialQAComplain.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].QAComplain = QAComplain;
     }
     res.status(200).json(materialOrders);
   } catch (error) {
@@ -144,6 +196,18 @@ export const getMaterialOrdersBySupplierIDAndStatus = async (req, res) => {
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+      const materialQAs = await MaterialQA.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].materialQAs = materialQAs;
+      const manufacturer = await Manufacturer.find({
+        _id: materialOrders[i].manufacturerID,
+      });
+      materialOrders[i].manufacturer = manufacturer[0];
+      const QAComplain = await MaterialQAComplain.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].QAComplain = QAComplain;
     }
     res.status(200).json(materialOrders);
   } catch (error) {

@@ -28,6 +28,14 @@ const MaterialOrderSchema = new Schema(
       type: Object,
       default: {},
     },
+    manufacturerID: {
+      type: String,
+      required: true,
+    },
+    manufacturer: {
+      type: Object,
+      default: {},
+    },
     status: {
       type: String,
       default: "Pending",
@@ -39,6 +47,10 @@ const MaterialOrderSchema = new Schema(
         "Delivered",
         "Assuered",
       ],
+    },
+    materialQA: {
+      type: Array,
+      default: [],
     },
     QAComplain: {
       type: Array,
