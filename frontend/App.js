@@ -8,6 +8,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import SellerMain from "./screens/Seller/SellerMain";
 import ManufacturerMain from "./screens/Manufacturer/ManufacturerMain";
+import SupplierMain from "./screens/Supplier/SupplierMain";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -78,6 +79,8 @@ function App() {
         <Stack.Screen name="SellerMain" component={SellerMain} />
         {/* manufacturer */}
         <Stack.Screen name="ManufacturerMain" component={ManufacturerMain} />
+        {/* supplier */}
+        <Stack.Screen name="SupplierMain" component={SupplierMain} />
       </Stack.Navigator>
     </NavigationContainer>
   );
