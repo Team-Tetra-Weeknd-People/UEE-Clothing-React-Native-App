@@ -35,8 +35,8 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false);
   const [selectedType, setSelectedType] = useState("SUPPLIER"); // State to store the selected type
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("sudul.fernando@gmail.com");
+  const [password, setPassword] = useState("sudul123");
 
   // Define the available user types
   const userTypes = ["SUPPLIER", "MANUFACTURER", "SELLER", "PROCESS MANAGER"];
@@ -141,7 +141,9 @@ export default function LoginScreen() {
               alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
-              navigation.navigate("SellerMain", {seller : res.data.result});
+              AsyncStorage.setItem("seller", JSON.stringify(res.data.result)).then(() => {
+                navigation.navigate("SellerMain");
+              });
             } else {
               alert(res.data.message);
             }

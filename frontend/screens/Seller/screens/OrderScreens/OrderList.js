@@ -1,24 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { Touchable } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import ItemOrderService from '../../../../services/ItemOrder.Service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderList = () => {
     const [searchText, setSearchText] = useState('');
+    const [seller, setSeller] = useState({});
     const navigation = useNavigation();
+    const [orders, setOrders] = useState([]); // Initialize orders as an empty array
 
-    const [orders, setOrders] = useState([
-        { id: 1, customer: 'Customer 1', total: 50.0, manufacturer: 'Manufacturer A', price: 100, status: 'Delivered' },
-        { id: 2, customer: 'Cust2', total: 75.5, manufacturer: 'Manufacturer B', price: 150, status: 'Processing' },
-        { id: 3, customer: 'Customer 3', total: 30.0, manufacturer: 'Manufacturer C', price: 75, status: 'Delivered' },
-        // Add more order data here
-    ]);
+    useEffect(() => {
+        try {
+            AsyncStorage.getItem('seller').then((value) => {
+                setSeller(JSON.parse(value));
+            }).then(() => {
+                    ItemOrderService.getItemOrderBySellerId(seller._id)
+                        .then((value) => {
+                            console.log(value.data);
+                            setOrders(value.data || []); // Initialize orders with the API response (or an empty array)
+                        })
+                        .catch((error) => {
+                            console.error('Error fetching orders:', error);
+                        });
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }, []);
 
     // Filter orders based on the search text
     const filteredOrders = orders.filter((order) =>
-        order.customer.toLowerCase().includes(searchText.toLowerCase())
+        order._id.toLowerCase().includes(searchText.toLowerCase())
     );
 
     const toOrderDetails = () => {
@@ -46,12 +61,12 @@ const OrderList = () => {
             {/* Body */}
             <FlatList
                 data={filteredOrders}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item._id.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.tableRow} onPress={()=>{toOrderDetails()}}>
-                        <Text style={styles.manufacturerCell}>{item.manufacturer}</Text>
-                        <Text style={styles.supplierCell}>{item.customer}</Text>
-                        <Text style={styles.valueCell}>{`$${item.price}`}</Text>
+                    <TouchableOpacity style={styles.tableRow} onPress={toOrderDetails}>
+                        <Text style={styles.manufacturerCell}>{item.manufacturer.companyName}</Text>
+                        <Text style={styles.supplierCell}>{item.supplier.companyName}</Text>
+                        <Text style={styles.valueCell}>${item.totalPrice}</Text>
                         <Text style={styles.statusCell}>{item.status}</Text>
                     </TouchableOpacity>
                 )}
