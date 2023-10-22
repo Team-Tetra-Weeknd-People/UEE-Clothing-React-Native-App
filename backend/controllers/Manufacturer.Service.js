@@ -87,7 +87,7 @@ export const loginManufacturer = async (req, res) => {
         );
         res
           .status(200)
-          .json({ result: manufacturer, token, user: "MANUFACTURER" });
+          .json({ result: manufacturer, token, user: "MANUFACTURER", id: manufacturer._id });
       } else {
         res.status(400).json({ message: "Invalid credentials" });
       }
