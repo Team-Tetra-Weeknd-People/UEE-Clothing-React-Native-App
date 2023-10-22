@@ -36,6 +36,14 @@ const ItemOrderSchema = new Schema(
       type: Object,
       default: {},
     },
+    supplier: {
+      type: Object,
+      default: {},
+    },
+    material: {
+      type: Object,
+      default: {},
+    },
     status: {
       type: String,
       default: "Pending",

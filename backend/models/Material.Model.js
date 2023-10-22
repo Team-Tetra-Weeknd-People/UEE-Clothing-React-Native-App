@@ -22,6 +22,14 @@ const MaterialSchema = new Schema(
       type: Array,
       default: [],
     },
+    supplierID: {
+      type: String,
+      required: true,
+    },
+    supplier: {
+      type: Object,
+      default: {},
+    },
   },
   {
     timestamps: {

@@ -10,22 +10,31 @@ export const getMaterialOrders = async (req, res) => {
   try {
     const materialOrders = await MaterialOrder.find();
     for (let i = 0; i < materialOrders.length; i++) {
+      //material
       const material = await Material.find({
         _id: materialOrders[i].materialID,
       });
       materialOrders[i].material = material[0];
+
+      //supplier
       const supplier = await Supplier.find({
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+
+      //materialQA
       const materialQAs = await MaterialQA.find({
-        materialOrderID: materialOrders[i]._id,
+        materialID: materialOrders[i].material._id,
       });
       materialOrders[i].materialQA = materialQAs;
+
+      //manufacturer
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });
       materialOrders[i].manufacturer = manufacturer[0];
+
+      //QAComplain
       const QAComplain = await MaterialQAComplain.find({
         materialOrderID: materialOrders[i]._id,
       });
@@ -43,22 +52,35 @@ export const getMaterialOrder = async (req, res) => {
 
   try {
     const materialOrder = await MaterialOrder.findById(id);
-    const material = await Material.find({ _id: materialOrder.materialID });
-    materialOrder.material = material[0];
-    const supplier = await Supplier.find({ _id: materialOrder.supplierID });
-    materialOrder.supplier = supplier[0];
+    //material
+    const material = await Material.find({
+      _id: materialOrder[i].materialID,
+    });
+    materialOrder[i].material = material[0];
+
+    //supplier
+    const supplier = await Supplier.find({
+      _id: materialOrder[i].supplierID,
+    });
+    materialOrder[i].supplier = supplier[0];
+
+    //materialQA
     const materialQAs = await MaterialQA.find({
-      materialOrderID: materialOrder._id,
+      materialID: materialOrder[i].material._id,
     });
-    materialOrder.materialQA = materialQAs;
+    materialOrder[i].materialQA = materialQAs;
+
+    //manufacturer
     const manufacturer = await Manufacturer.find({
-      _id: materialOrder.manufacturerID,
+      _id: materialOrder[i].manufacturerID,
     });
-    materialOrder.manufacturer = manufacturer[0];
+    materialOrder[i].manufacturer = manufacturer[0];
+
+    //QAComplain
     const QAComplain = await MaterialQAComplain.find({
-      materialOrderID: materialOrder._id,
+      materialOrderID: materialOrder[i]._id,
     });
-    materialOrder.QAComplain = QAComplain;
+    materialOrder[i].QAComplain = QAComplain;
 
     res.status(200).json(materialOrder);
   } catch (error) {
@@ -117,22 +139,31 @@ export const getMaterialOrdersBySupplierID = async (req, res) => {
   try {
     const materialOrders = await MaterialOrder.find({ supplierID: id });
     for (let i = 0; i < materialOrders.length; i++) {
+      //material
       const material = await Material.find({
         _id: materialOrders[i].materialID,
       });
       materialOrders[i].material = material[0];
+
+      //supplier
       const supplier = await Supplier.find({
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+
+      //materialQA
       const materialQAs = await MaterialQA.find({
-        materialOrderID: materialOrders[i]._id,
+        materialID: materialOrders[i].material._id,
       });
       materialOrders[i].materialQA = materialQAs;
+
+      //manufacturer
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });
       materialOrders[i].manufacturer = manufacturer[0];
+
+      //QAComplain
       const QAComplain = await MaterialQAComplain.find({
         materialOrderID: materialOrders[i]._id,
       });
@@ -151,22 +182,31 @@ export const getMaterialOrdersByStatus = async (req, res) => {
   try {
     const materialOrders = await MaterialOrder.find({ status: status });
     for (let i = 0; i < materialOrders.length; i++) {
+      //material
       const material = await Material.find({
         _id: materialOrders[i].materialID,
       });
       materialOrders[i].material = material[0];
+
+      //supplier
       const supplier = await Supplier.find({
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+
+      //materialQA
       const materialQAs = await MaterialQA.find({
-        materialOrderID: materialOrders[i]._id,
+        materialID: materialOrders[i].material._id,
       });
       materialOrders[i].materialQA = materialQAs;
+
+      //manufacturer
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });
       materialOrders[i].manufacturer = manufacturer[0];
+
+      //QAComplain
       const QAComplain = await MaterialQAComplain.find({
         materialOrderID: materialOrders[i]._id,
       });
@@ -188,22 +228,31 @@ export const getMaterialOrdersBySupplierIDAndStatus = async (req, res) => {
       status: status,
     });
     for (let i = 0; i < materialOrders.length; i++) {
+      //material
       const material = await Material.find({
         _id: materialOrders[i].materialID,
       });
       materialOrders[i].material = material[0];
+
+      //supplier
       const supplier = await Supplier.find({
         _id: materialOrders[i].supplierID,
       });
       materialOrders[i].supplier = supplier[0];
+
+      //materialQA
       const materialQAs = await MaterialQA.find({
-        materialOrderID: materialOrders[i]._id,
+        materialID: materialOrders[i].material._id,
       });
       materialOrders[i].materialQA = materialQAs;
+
+      //manufacturer
       const manufacturer = await Manufacturer.find({
         _id: materialOrders[i].manufacturerID,
       });
       materialOrders[i].manufacturer = manufacturer[0];
+
+      //QAComplain
       const QAComplain = await MaterialQAComplain.find({
         materialOrderID: materialOrders[i]._id,
       });

@@ -1,5 +1,6 @@
 import Material from "../models/Material.Model.js";
 import MaterialQA from "../models/MaterialQA.Model.js";
+import Supplier from "../models/Supplier.Model.js";
 
 // Get all materials
 export const getMaterials = async (req, res) => {
@@ -10,6 +11,8 @@ export const getMaterials = async (req, res) => {
         materialID: materials[i]._id,
       });
       materials[i].qualityAttributes = materialQAs;
+      const supplier = await Supplier.find({ _id: materials[i].supplierID });
+      materials[i].supplier = supplier[0];
     }
     res.status(200).json(materials);
   } catch (error) {
@@ -25,6 +28,8 @@ export const getMaterial = async (req, res) => {
     const material = await Material.findById(id);
     const materialQAs = await MaterialQA.find({ materialID: material._id });
     material.qualityAttributes = materialQAs;
+    const supplier = await Supplier.find({ _id: material.supplierID });
+    material.supplier = supplier[0];
     res.status(200).json(material);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -71,10 +76,28 @@ export const deleteMaterial = async (req, res) => {
   res.json({ message: "Material deleted successfully." });
 };
 
+export const getMaterialsBySupplierID = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const materials = await Material.find({ supplierID: id });
+    for (let i = 0; i < materials.length; i++) {
+      const materialQAs = await MaterialQA.find({
+        materialID: materials[i]._id,
+      });
+      materials[i].qualityAttributes = materialQAs;
+    }
+    res.status(200).json(materials);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export default {
   getMaterials,
   getMaterial,
   createMaterial,
   updateMaterial,
   deleteMaterial,
+  getMaterialsBySupplierID,
 };

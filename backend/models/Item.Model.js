@@ -22,6 +22,22 @@ const ItemSchema = new Schema(
       type: Array,
       default: [],
     },
+    manufacturerID: {
+      type: String,
+      required: true,
+    },
+    manufacturer: {
+      type: Object,
+      default: {},
+    },
+    materialID: {
+      type: String,
+      required: true,
+    },
+    material: {
+      type: Object,
+      default: {},
+    },
   },
   {
     timestamps: {
