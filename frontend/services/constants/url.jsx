@@ -11,9 +11,9 @@ export const ITEM_GET_BY_MATERIAL_URL = (id) =>
   `${BASE_URL}/items/getByMaterial/${id}`;
 
 export const ITEM_ORDER_URL = `${BASE_URL}/itemOrders`;
-export const ITEM_ORDER_ID_URL = `${BASE_URL}/itemOrders/`;
+export const ITEM_ORDER_ID_URL = (id) => `${BASE_URL}/itemOrders/${id}`;
 export const ITEM_ORDER_GETONE_URL = (id) =>
-  `${BASE_URL}/itemOrders/getOne${id}`;
+  `${BASE_URL}/itemOrders/getOne/${id}`;
 export const ITEM_ORDER_MANUFACTURER_URL = (id) =>
   `${BASE_URL}/itemOrders/manufacturerID/${id}`;
   export const ITEM_ORDER_SELLER_URL = id =>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import ItemOrderService from '../../../../services/ItemOrder.Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderList = () => {
+    const [isFontLoaded, setIsFontLoaded] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [seller, setSeller] = useState({});
     const navigation = useNavigation();
@@ -16,30 +17,36 @@ const OrderList = () => {
         try {
             AsyncStorage.getItem('seller').then((value) => {
                 setSeller(JSON.parse(value));
-            }).then(() => {
-                    ItemOrderService.getItemOrderBySellerId(seller._id)
-                        .then((value) => {
-                            console.log(value.data);
-                            setOrders(value.data || []); // Initialize orders with the API response (or an empty array)
-                        })
-                        .catch((error) => {
-                            console.error('Error fetching orders:', error);
-                        });
             });
         } catch (e) {
             console.log(e);
         }
     }, []);
-
+    useEffect(() => {
+            ItemOrderService.getItemOrderBySellerId(seller._id)
+            .then((res) => {
+                setOrders(res.data);
+                setIsFontLoaded(true);
+            })
+            .catch((error) => {
+                console.error('Error fetching orders:', error);
+            });
+    }, [seller._id]);
     // Filter orders based on the search text
     const filteredOrders = orders.filter((order) =>
         order._id.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const toOrderDetails = () => {
-        navigation.navigate('OrderDetails', { orderId: 1 });
+    const toOrderDetails = (id) => {
+        navigation.navigate('OrderDetails', { orderId: id});
     };
-
+    if (!isFontLoaded) {
+        return (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#1D1D27" />
+          </View>
+        );
+      }
     return (
         <View style={styles.container}>
             <View style={styles.searchBarContainer}>
@@ -63,7 +70,7 @@ const OrderList = () => {
                 data={filteredOrders}
                 keyExtractor={(item) => item._id.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.tableRow} onPress={toOrderDetails}>
+                    <TouchableOpacity style={styles.tableRow} onPress={()=>{toOrderDetails(item._id)}}>
                         <Text style={styles.manufacturerCell}>{item.manufacturer.companyName}</Text>
                         <Text style={styles.supplierCell}>{item.supplier.companyName}</Text>
                         <Text style={styles.valueCell}>${item.totalPrice}</Text>
@@ -101,6 +108,12 @@ const styles = StyleSheet.create({
             },
         }),
     },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white", // Change the background color as needed
+      },
     searchIcon: {
         paddingLeft: 5,
         paddingRight: 7,

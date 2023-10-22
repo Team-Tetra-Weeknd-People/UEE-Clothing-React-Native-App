@@ -49,11 +49,11 @@ const ItemOrderSchema = new Schema(
       default: "Pending",
       enums: [
         "Pending",
-        "Accepted",
-        "Confiremed",
+        "Confirmed",
+        "Sent",
         "Rejected",
-        "Delivered",
-        "Assuered",
+        "Received",
+        "Assured",
       ],
     },
     itemQA: {
