@@ -132,12 +132,10 @@ export const updateItemOrder = async (req, res) => {
   if (QAs) {
     for (let i = 0; i < QAs.length; i++) {
       //update OrderQA status
-      // console.log(QAs[i]);
       try {
-        const qa = await ItemQA.findByIdAndUpdate(QAs[i]._id, QAs[i], {
+        await ItemQA.findByIdAndUpdate(QAs[i]._id, QAs[i], {
           new: true,
         });
-        console.log(qa);
       } catch (error) {
         console.log(error);
       }
