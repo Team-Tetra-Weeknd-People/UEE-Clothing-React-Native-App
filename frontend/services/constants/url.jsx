@@ -8,6 +8,8 @@ export const ITEM_ORDER_ID_URL = `${BASE_URL}/itemOrders/`;
 export const ITEM_ORDER_GETONE_URL = id => `${BASE_URL}/itemOrders/getOne${id}`;
 export const ITEM_ORDER_MANUFACTURER_URL = id =>
   `${BASE_URL}/itemOrders/manufacturerID/${id}`;
+  export const ITEM_ORDER_SELLER_URL = id =>
+  `${BASE_URL}/itemOrders/sellerID/${id}`;
 export const ITEM_ORDER_STATUS_URL = status =>
   `${BASE_URL}/itemOrders/status/${status}`;
 export const ITEM_ORDER_MANUFACTURER_STATUS_URL = (status, id) =>
