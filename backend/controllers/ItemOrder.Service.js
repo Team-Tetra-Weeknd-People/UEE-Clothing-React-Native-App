@@ -122,8 +122,17 @@ export const updateItemOrder = async (req, res) => {
   const { id } = req.params;
   const itemOrder = req.body;
 
-  if (ItemOrder.findById(req.params.id))
+  if (!ItemOrder.findById(req.params.id))
     return res.status(404).send("No itemOrder with that id");
+
+  const QAs = itemOrder.itemQA;
+
+  for (let i = 0; i < QAs.length; i++) {
+    //update OrderQA status
+    ItemQA.findByIdAndUpdate(QAs[i]._id, QAs[i], {
+      new: true,
+    });
+  }
 
   const updatedItemOrder = await ItemOrder.findByIdAndUpdate(id, itemOrder, {
     new: true,
@@ -135,7 +144,7 @@ export const updateItemOrder = async (req, res) => {
 export const deleteItemOrder = async (req, res) => {
   const { id } = req.params;
 
-  if (ItemOrder.findById(req.params.id))
+  if (!ItemOrder.findById(req.params.id))
     return res.status(404).send("No itemOrder with that id");
 
   await ItemOrder.findByIdAndRemove(id);
