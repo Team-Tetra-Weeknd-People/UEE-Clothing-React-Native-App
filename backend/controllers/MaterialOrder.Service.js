@@ -54,33 +54,33 @@ export const getMaterialOrder = async (req, res) => {
     const materialOrder = await MaterialOrder.findById(id);
     //material
     const material = await Material.find({
-      _id: materialOrder[i].materialID,
+      _id: materialOrder.materialID,
     });
-    materialOrder[i].material = material[0];
+    materialOrder.material = material[0];
 
     //supplier
     const supplier = await Supplier.find({
-      _id: materialOrder[i].supplierID,
+      _id: materialOrder.supplierID,
     });
-    materialOrder[i].supplier = supplier[0];
+    materialOrder.supplier = supplier[0];
 
     //materialQA
     const materialQAs = await MaterialQA.find({
-      materialID: materialOrder[i].material._id,
+      materialID: materialOrder.material._id,
     });
-    materialOrder[i].materialQA = materialQAs;
+    materialOrder.materialQA = materialQAs;
 
     //manufacturer
     const manufacturer = await Manufacturer.find({
-      _id: materialOrder[i].manufacturerID,
+      _id: materialOrder.manufacturerID,
     });
-    materialOrder[i].manufacturer = manufacturer[0];
+    materialOrder.manufacturer = manufacturer[0];
 
     //QAComplain
     const QAComplain = await MaterialQAComplain.find({
-      materialOrderID: materialOrder[i]._id,
+      materialOrderID: materialOrder._id,
     });
-    materialOrder[i].QAComplain = QAComplain;
+    materialOrder.QAComplain = QAComplain;
 
     res.status(200).json(materialOrder);
   } catch (error) {
