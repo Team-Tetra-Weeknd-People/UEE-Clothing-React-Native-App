@@ -92,6 +92,44 @@ export const loginSupplier = async (req, res) => {
   }
 };
 
+// handle level
+export const handleLevel = async (req, res) => {
+  const { id } = req.params;
+  const { points, count } = req.body; // count is up or down
+
+  // get supplier
+  const supplier = await Supplier.findById(id);
+
+  // update points
+  if (count === "up") {
+    supplier.points = parseFloat(supplier.points) + parseFloat(points);
+  } else {
+    supplier.points = parseFloat(supplier.points) - parseFloat(points);
+  }
+
+  // if points is greater than 100 then level up and reset points
+  if (supplier.points >= 100) {
+    supplier.points = 0;
+    supplier.level = parseFloat(supplier.level) + 1;
+  }
+
+  // if points is less than 0 then level down and reset points
+  if (supplier.points < 0) {
+    supplier.points = 0;
+    supplier.level = parseFloat(supplier.level) - 1;
+  }
+
+  if (supplier.level < 0) {
+    supplier.level = 0;
+  }
+
+  // update supplier
+  const updatedSupplier = await Supplier.findByIdAndUpdate(id, supplier, {
+    new: true,
+  });
+  res.json(updatedSupplier);
+};
+
 export default {
   getSuppliers,
   getSupplier,
@@ -99,4 +137,5 @@ export default {
   updateSupplier,
   deleteSupplier,
   loginSupplier,
+  handleLevel,
 };

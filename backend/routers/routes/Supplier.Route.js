@@ -9,5 +9,6 @@ router.get("/:id", SupplierController.getSupplier);
 router.put("/:id", SupplierController.updateSupplier);
 router.delete("/:id", SupplierController.deleteSupplier);
 router.post("/login", SupplierController.loginSupplier);
+router.post("/handleLevel/:id", SupplierController.handleLevel);
 
 export default router;
