@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,28 @@ import {
 } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import GreenButton from '../../../components/GreenButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SellerProfile = ({ route }) => {
-  const { seller } = route.params;
+const SellerProfile = () => {
+  const [seller, setSeller] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  const [firstName, setFirstName] = useState(seller.fname);
-  const [lastName, setLastName] = useState(seller.lname);
-  const [companyName, setCompanyName] = useState(seller.companyName);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [companyName, setCompanyName] = useState('');
+
+  useEffect(() => {
+    try{
+      AsyncStorage.getItem('seller').then((value) => {
+        setSeller(JSON.parse(value));
+        setFirstName(JSON.parse(value).fname);
+        setLastName(JSON.parse(value).lname);
+        setCompanyName(JSON.parse(value).companyName);
+        console.log(value);
+      });
+    }catch(e){
+      console.log(e);
+    }
+  }, []);
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -45,7 +60,7 @@ const SellerProfile = ({ route }) => {
             {isEditing ? (
               <TextInput
                 style={styles.input}
-                value={firstName}
+                value={seller.fname}
                 onChangeText={(text) => setFirstName(text)}
               />
             ) : (
@@ -57,7 +72,7 @@ const SellerProfile = ({ route }) => {
             {isEditing ? (
               <TextInput
                 style={styles.input}
-                value={lastName}
+                value={seller.lname}
                 onChangeText={(text) => setLastName(text)}
               />
             ) : (
@@ -69,7 +84,7 @@ const SellerProfile = ({ route }) => {
             {isEditing ? (
               <TextInput
                 style={styles.input}
-                value={companyName}
+                value={seller.companyName}
                 onChangeText={(text) => setCompanyName(text)}
               />
             ) : (
@@ -134,7 +149,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   label: {
-    alignItems: 'right',
     fontSize: 16,
     fontFamily: 'Montserrat-SemiBold',
     flex: 1,

@@ -48,7 +48,7 @@ export const getItemOrderByManufacturer = id => {
     },
   });
 };
-export const getItemOrderBySeller = id => {
+export const getItemOrderBySellerId = id => {
   return axios.get(url.ITEM_ORDER_SELLER_URL(id), {
     headers: {
       'Content-Type': 'application/json',
@@ -80,5 +80,5 @@ export default {
   getItemOrderByManufacturer,
   getItemOrderByStatus,
   getItemOrderByManufacturerAndStatus,
-  getItemOrderBySeller
+  getItemOrderBySellerId
 };
