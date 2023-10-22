@@ -127,6 +127,8 @@ export const updateItemOrder = async (req, res) => {
 
   const QAs = itemOrder.itemQA;
 
+  console.log(QAs);
+
   for (let i = 0; i < QAs.length; i++) {
     //update OrderQA status
     ItemQA.findByIdAndUpdate(QAs[i]._id, QAs[i], {
