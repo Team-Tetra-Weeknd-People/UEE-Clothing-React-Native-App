@@ -126,9 +126,9 @@ const OrderAndChecklist = () => {
                             <View style={styles.qclTableRow} key={attribute._id}>
                                 {attribute.status === "Pending" ? (
                                     <Ionicons
-                                        name="ellipse"
+                                        name="ellipse-outline"
                                         size={24}
-                                        color="gray"
+                                        color="#7777"
                                         onPress={() =>
                                             toggleQualityAttributeStatus(attribute._id)
                                         }
