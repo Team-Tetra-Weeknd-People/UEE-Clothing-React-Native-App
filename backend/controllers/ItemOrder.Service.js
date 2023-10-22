@@ -4,6 +4,7 @@ import ItemQA from "../models/ItemQA.Model.js";
 import ItemQAComplain from "../models/ItemQAComplaint.Model.js";
 import Manufacturer from "../models/Manufacturer.Model.js";
 import Seller from "../models/Seller.Model.js";
+import Supplier from "../models/Supplier.Model.js";
 import Material from "../models/Material.Model.js";
 
 // Get all itemOrders
@@ -16,14 +17,16 @@ export const getItemOrders = async (req, res) => {
       itemOrders[i].item = item[0];
 
       // material to item
-      const material = await Material.find({ _id: itemOrders[i].item._id });
-      itemOrders[i].item.material = material[0];
+      const material = await Material.find({
+        _id: itemOrders[i].item.materialID,
+      });
+      itemOrders[i].material = material[0];
 
       // suuplier to material
-      const supplier = await Seller.find({
+      const supplier = await Supplier.find({
         _id: itemOrders[i].item.material.supplierID,
       });
-      itemOrders[i].item.material.supplier = supplier[0];
+      itemOrders[i].supplier = supplier[0];
 
       //manufacturer
       const manufacturer = await Manufacturer.find({
@@ -32,7 +35,9 @@ export const getItemOrders = async (req, res) => {
       itemOrders[i].manufacturer = manufacturer[0];
 
       //itemQA
-      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      const itemQAs = await ItemQA.find({
+        itemID: itemOrders[i].item._id,
+      });
       itemOrders[i].itemQA = itemQAs;
 
       //seller
@@ -56,38 +61,42 @@ export const getItemOrder = async (req, res) => {
   try {
     const itemOrder = await ItemOrder.findById(req.params.id);
     //item
-    const item = await Item.find({ _id: itemOrder.itemID });
-    itemOrder.item = item[0];
+    const item = await Item.find({ _id: itemOrder[i].itemID });
+    itemOrder[i].item = item[0];
 
     // material to item
-    const material = await Material.find({ _id: itemOrder.item._id });
-    itemOrder.item.material = material[0];
+    const material = await Material.find({
+      _id: itemOrder[i].item.materialID,
+    });
+    itemOrder[i].material = material[0];
 
     // suuplier to material
-    const supplier = await Seller.find({
-      _id: itemOrder.item.material.supplierID,
+    const supplier = await Supplier.find({
+      _id: itemOrder[i].item.material.supplierID,
     });
-    itemOrder.item.material.supplier = supplier[0];
+    itemOrder[i].supplier = supplier[0];
 
     //manufacturer
     const manufacturer = await Manufacturer.find({
-      _id: itemOrder.manufacturerID,
+      _id: itemOrder[i].manufacturerID,
     });
-    itemOrder.manufacturer = manufacturer[0];
+    itemOrder[i].manufacturer = manufacturer[0];
 
     //itemQA
-    const itemQAs = await ItemQA.find({ itemOrderID: itemOrder._id });
-    itemOrder.itemQA = itemQAs;
+    const itemQAs = await ItemQA.find({
+      itemID: itemOrder[i].item._id,
+    });
+    itemOrder[i].itemQA = itemQAs;
 
     //seller
-    const seller = await Seller.find({ _id: itemOrder.sellerID });
-    itemOrder.seller = seller[0];
+    const seller = await Seller.find({ _id: itemOrder[i].sellerID });
+    itemOrder[i].seller = seller[0];
 
     //QAComplain
     const QAComplain = await ItemQAComplain.find({
-      itemOrderID: itemOrder._id,
+      itemOrderID: itemOrder[i]._id,
     });
-    itemOrder.QAComplain = QAComplain;
+    itemOrder[i].QAComplain = QAComplain;
     res.status(200).json(itemOrder);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -113,7 +122,7 @@ export const updateItemOrder = async (req, res) => {
   const { id } = req.params;
   const itemOrder = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (ItemOrder.findById(req.params.id))
     return res.status(404).send("No itemOrder with that id");
 
   const updatedItemOrder = await ItemOrder.findByIdAndUpdate(id, itemOrder, {
@@ -126,7 +135,7 @@ export const updateItemOrder = async (req, res) => {
 export const deleteItemOrder = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (ItemOrder.findById(req.params.id))
     return res.status(404).send("No itemOrder with that id");
 
   await ItemOrder.findByIdAndRemove(id);
@@ -146,30 +155,34 @@ export const getItemOrdersByManufacturerID = async (req, res) => {
       itemOrders[i].item = item[0];
 
       // material to item
-      const material = await Material.find({ _id: itemOrders[i].item._id });
-      itemOrders[i].item.material = material[0];
+      const material = await Material.find({
+        _id: itemOrders[i].item.materialID,
+      });
+      itemOrders[i].material = material[0];
 
       // suuplier to material
-      const supplier = await Seller.find({
+      const supplier = await Supplier.find({
         _id: itemOrders[i].item.material.supplierID,
       });
-      itemOrders[i].item.material.supplier = supplier[0];
+      itemOrders[i].supplier = supplier[0];
 
-      // manufacturer
+      //manufacturer
       const manufacturer = await Manufacturer.find({
         _id: itemOrders[i].manufacturerID,
       });
       itemOrders[i].manufacturer = manufacturer[0];
 
-      // itemQA
-      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      //itemQA
+      const itemQAs = await ItemQA.find({
+        itemID: itemOrders[i].item._id,
+      });
       itemOrders[i].itemQA = itemQAs;
 
-      // seller
+      //seller
       const seller = await Seller.find({ _id: itemOrders[i].sellerID });
       itemOrders[i].seller = seller[0];
 
-      // QAComplain
+      //QAComplain
       const QAComplain = await ItemQAComplain.find({
         itemOrderID: itemOrders[i]._id,
       });
@@ -193,30 +206,34 @@ export const getItemOrdersByStatus = async (req, res) => {
       itemOrders[i].item = item[0];
 
       // material to item
-      const material = await Material.find({ _id: itemOrders[i].item._id });
-      itemOrders[i].item.material = material[0];
+      const material = await Material.find({
+        _id: itemOrders[i].item.materialID,
+      });
+      itemOrders[i].material = material[0];
 
       // suuplier to material
-      const supplier = await Seller.find({
+      const supplier = await Supplier.find({
         _id: itemOrders[i].item.material.supplierID,
       });
-      itemOrders[i].item.material.supplier = supplier[0];
+      itemOrders[i].supplier = supplier[0];
 
-      // manufacturer
+      //manufacturer
       const manufacturer = await Manufacturer.find({
         _id: itemOrders[i].manufacturerID,
       });
       itemOrders[i].manufacturer = manufacturer[0];
 
-      // itemQA
-      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      //itemQA
+      const itemQAs = await ItemQA.find({
+        itemID: itemOrders[i].item._id,
+      });
       itemOrders[i].itemQA = itemQAs;
 
-      // seller
+      //seller
       const seller = await Seller.find({ _id: itemOrders[i].sellerID });
       itemOrders[i].seller = seller[0];
 
-      // QAComplain
+      //QAComplain
       const QAComplain = await ItemQAComplain.find({
         itemOrderID: itemOrders[i]._id,
       });
@@ -243,30 +260,34 @@ export const getItemOrdersByManufacturerIDAndStatus = async (req, res) => {
       itemOrders[i].item = item[0];
 
       // material to item
-      const material = await Material.find({ _id: itemOrders[i].item._id });
-      itemOrders[i].item.material = material[0];
+      const material = await Material.find({
+        _id: itemOrders[i].item.materialID,
+      });
+      itemOrders[i].material = material[0];
 
       // suuplier to material
-      const supplier = await Seller.find({
+      const supplier = await Supplier.find({
         _id: itemOrders[i].item.material.supplierID,
       });
-      itemOrders[i].item.material.supplier = supplier[0];
+      itemOrders[i].supplier = supplier[0];
 
-      // manufacturer
+      //manufacturer
       const manufacturer = await Manufacturer.find({
         _id: itemOrders[i].manufacturerID,
       });
       itemOrders[i].manufacturer = manufacturer[0];
 
-      // itemQA
-      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      //itemQA
+      const itemQAs = await ItemQA.find({
+        itemID: itemOrders[i].item._id,
+      });
       itemOrders[i].itemQA = itemQAs;
 
-      // seller
+      //seller
       const seller = await Seller.find({ _id: itemOrders[i].sellerID });
       itemOrders[i].seller = seller[0];
 
-      // QAComplain
+      //QAComplain
       const QAComplain = await ItemQAComplain.find({
         itemOrderID: itemOrders[i]._id,
       });
