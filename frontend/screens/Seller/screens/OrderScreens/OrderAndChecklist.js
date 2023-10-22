@@ -1,32 +1,104 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
-import { View, Button, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
+import ItemOrderService from "../../../../services/ItemOrder.Service";
 
 const OrderAndChecklist = () => {
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+      setRefreshing(true);
+      ItemOrderService.getItemOrderById(orderId)
+            .then((res) => {
+                setOrder(res.data);
+                setQualityAttributes(res.data.itemQA || []);
+                setIsFontLoaded(true);
+            }).catch((error) => {
+                console.error('Error fetching order:', error);
+            });
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 2000);
+    }, [orderId]);
+
+    const [isFontLoaded, setIsFontLoaded] = useState(false);
     const route = useRoute();
     const { orderId } = route.params;
     const navigation = useNavigation();
 
-    const handleButtonClick = () => {
-        // Add the desired functionality when the button is clicked.
-        // For example, navigate to another screen.
-        // navigation.navigate('AnotherScreen');
-        console.log("Button clicked");
-        navigation.navigate("MarkAsDefect", { orderId: orderId });
+    const [order, setOrder] = useState({});
+    const [qualityAttributes, setQualityAttributes] = useState([]);
+
+    useEffect(() => {
+        ItemOrderService.getItemOrderById(orderId)
+            .then((res) => {
+                setOrder(res.data);
+                setQualityAttributes(res.data.itemQA || []);
+                setIsFontLoaded(true);
+            }).catch((error) => {
+                console.error('Error fetching order:', error);
+            });
+    }, [orderId]);
+
+    const toggleQualityAttributeStatus = (attributeId) => {
+        const updatedAttributes = qualityAttributes.map((attribute) => {
+            if (attribute._id === attributeId) {
+                if (attribute.status === "Pending") {
+                    attribute.status = "Checked";
+                } else if (attribute.status === "Checked") {
+                    attribute.status = "Pending";
+                }
+            }
+            return attribute;
+        });
+        setQualityAttributes(updatedAttributes);
+    };
+    const toOrderJourney = () => {
+        navigation.navigate("JOURNEY", { orderId: orderId });
     };
 
-
+    const completeAssurance = () => {
+        setRefreshing(true);
+        ItemOrderService.updateItemOrderById(orderId, { status: "Assured" , itemQA: qualityAttributes})
+        .then((res) => {
+            console.log(res.data);
+        }).catch((error) => {
+            console.error('Error updating order:', error);
+        });
+        setTimeout(() => {
+            ItemOrderService.getItemOrderById(orderId)
+            .then((res) => {
+                setOrder(res.data);
+                setQualityAttributes(res.data.itemQA);
+                setIsFontLoaded(true);
+            }).catch((error) => {
+                console.error('Error fetching order:', error);
+            });
+            setRefreshing(false);
+          }, 2000);
+        
+    };
+    if (!isFontLoaded) {
+        return (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#1D1D27" />
+          </View>
+        );
+      }
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
             <View style={styles.headerContainer}>
-                <Text style={styles.title}>ORDER : {orderId}</Text>
-                <GreenButton title="Order Journey" onPress={handleButtonClick} />
+                <Text style={styles.title}>ORDER ID :</Text>
+                <GreenButton title="Order Journey" onPress={toOrderJourney} />
             </View>
+            <Text style={styles.idText}>{orderId} </Text>
             {/* Headers */}
             <View style={styles.tableHeader}>
                 <Text style={styles.manufacturerHeader}>MANUFACTURER</Text>
@@ -36,61 +108,62 @@ const OrderAndChecklist = () => {
             </View>
             {/* Body */}
             <View style={styles.tableRow}>
-                <Text style={styles.manufacturerCell}>Manufacturer A</Text>
-                <Text style={styles.supplierCell}>Supplier A</Text>
-                <Text style={styles.valueCell}>$100</Text>
-                <Text style={styles.statusCell}>Delivered</Text>
-            </View>
-            <View style={styles.description}>
-                <Text style={styles.descriptionTitle}>DESCRIPTION</Text>
-                <Text style={styles.descriptionText}>Manufacturer B</Text>
-            </View>
-
-            <View style={styles.qclContainer}>
-                <Text style={styles.qclTopic}>
-                    <FontAwesome5 name="clipboard-list" size={24} color="black" />
-                    &nbsp;&nbsp; QUALITY CHECKLIST
+                <Text style={styles.manufacturerCell}>{order.manufacturer.companyName}</Text>
+                <Text style={styles.supplierCell}>{order.supplier.companyName}</Text>
+                <Text style={styles.dollarCell}>
+                   ${order.totalPrice}
                 </Text>
+                <Text style={styles.statusCell}>{order.status}</Text>
+            </View>
+            <View style={styles.qclContainer}>
                 <View style={styles.qclBody}>
-                    <View style={styles.table}>
-                        <View style={styles.qcltableRow}>
-                            <Text style={styles.qclCell}> <Ionicons name="checkmark-circle-sharp" size={24} color="green" /></Text>
-                            <Text style={styles.supplierCell}>Quality Attribute</Text>
-                            <Text style={styles.valueCell}><SlateButton title="Mark as Defect" onPress={handleButtonClick} /></Text>
-                        </View>
-
-                        <View style={styles.qcltableRow}>
-                            <Text style={styles.qclCell}> <Entypo name="circle-with-cross" size={24} color="red" /></Text>
-                            <Text style={styles.supplierCell}>Quality Attribute</Text>
-                            <Text style={styles.valueCell}><SlateButton title="Mark as Normal" onPress={handleButtonClick} /></Text>
-                        </View>
-
-                        <View style={styles.qcltableRow}>
-                            <Text style={styles.qclCell}> <Ionicons name="checkmark-circle-sharp" size={24} color="green" /></Text>
-                            <Text style={styles.supplierCell}>Quality Attribute</Text>
-                            <Text style={styles.valueCell}><SlateButton title="Mark as Defect" onPress={handleButtonClick} /></Text>
-                        </View>
-
-                        <View style={styles.qcltableRow}>
-                            <Text style={styles.qclCell}> <Entypo name="circle-with-cross" size={24} color="red" /></Text>
-                            <Text style={styles.supplierCell}>Quality Attribute</Text>
-                            <Text style={styles.valueCell}><SlateButton title="Mark as Normal" onPress={handleButtonClick} /></Text>
-                        </View>
-
-                        <View style={styles.qcltableRow}>
-                            <Text style={styles.qclCell}> <Ionicons name="checkmark-circle-sharp" size={24} color="green" /></Text>
-                            <Text style={styles.supplierCell}>Quality Attribute</Text>
-                            <Text style={styles.valueCell}><SlateButton title="Mark as Defect" onPress={handleButtonClick} /></Text>
-                        </View>
-
-                        <View style={styles.qcltableRow}>
-                            <Text style={styles.qclCell}> <Entypo name="circle-with-cross" size={24} color="red" /></Text>
-                            <Text style={styles.supplierCell}>Quality Attribute</Text>
-                            <Text style={styles.valueCell}><SlateButton title="Mark as Normal" onPress={handleButtonClick} /></Text>
-                        </View>
+                    <Text style={styles.qclTopic}>
+                        <FontAwesome5 name="clipboard-list" size={24} color="black" />
+                        &nbsp;&nbsp; QUALITY CHECKLIST
+                    </Text>
+                    <View style={styles.qclTable}>
+                        {qualityAttributes.map((attribute) => (
+                            <View style={styles.qclTableRow} key={attribute._id}>
+                                {attribute.status === "Pending" ? (
+                                    <Ionicons
+                                        name="ellipse"
+                                        size={24}
+                                        color="gray"
+                                        onPress={() =>
+                                            toggleQualityAttributeStatus(attribute._id)
+                                        }
+                                    />
+                                ) : attribute.status === "Checked" ? (
+                                    <Ionicons
+                                        name="checkmark-circle"
+                                        size={24}
+                                        color="#3CDB7F"
+                                        onPress={() =>
+                                            toggleQualityAttributeStatus(attribute._id)
+                                        }
+                                    />
+                                ) : (
+                                    <Entypo
+                                        name="circle-with-cross"
+                                        size={24}
+                                        color="red"
+                                    />
+                                )}
+                                <Text style={styles.qclCell}>  {attribute.qaDescription}</Text>
+                                <View style={styles.valueCell}>
+                                    {attribute.status === "Pending" || attribute.status === "Checked"? (
+                                        <SlateButton    title="Mark as Defect" onPress={() => navigation.navigate("MarkAsDefect", { orderId: orderId, attributeId: attribute._id })} />
+                                    ) : (
+                                        <SlateButton
+                                            title= "Mark as Checked"
+                                            onPress={() => toggleQualityAttributeStatus(attribute._id)}
+                                        />
+                                    )}
+                                </View>
+                            </View>
+                        ))}
                     </View>
-
-                    <GreenButton style={styles.confirmBtn} title="Confirm Button" onPress={handleButtonClick} />
+                    <GreenButton style={styles.confirmBtn} title="Complete Assurance" onPress={completeAssurance} />
                 </View>
             </View>
         </ScrollView>
@@ -98,6 +171,12 @@ const OrderAndChecklist = () => {
 };
 
 const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white", // Change the background color as needed
+      },
     container: {
         flex: 1,
         padding: 16,
@@ -107,11 +186,15 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: 16,
     },
     title: {
         fontFamily: "Montserrat-Bold",
         fontSize: 24,
+    },
+    idText: {
+        fontFamily: "Montserrat-SemiBold",
+        fontSize: 18,
+        marginBottom: 10,
     },
     tableHeader: {
         flexDirection: "row",
@@ -166,7 +249,7 @@ const styles = StyleSheet.create({
         fontFamily: "Montserrat-SemiBold",
         textAlign: "center",
     },
-    valueCell: {
+    dollarCell: {
         flex: 2, // Adjusted flex value
         fontSize: 12,
         fontFamily: "Montserrat-SemiBold",
@@ -190,7 +273,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     qclContainer: {
-        marginTop: 30,
         width: "100%",
         minHeight: 300,
     },
@@ -201,29 +283,48 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     qclBody: {
-        borderWidth: 1,
-        borderColor: "black",
+        paddingTop: 15,
+        backgroundColor: '#fff',
         borderRadius: 10,
+        padding: 20,
+        marginVertical: 10,
+        shadowColor: '#14D2B8',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
         width: "100%",
         minHeight: 100,
         padding: 20
     },
-    qcltableRow: {
+    qclTable: {
+        paddingTop: 10,
+        borderColor: "black",
+        borderRadius: 10,
+        width: "100%",
+    },
+    qclTableRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 2,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
     },
     qclCell: {
-        flex: 1, // Adjusted flex value
+        flex: 3, // Adjusted flex value
         fontSize: 12,
         fontFamily: "Montserrat-SemiBold",
-        textAlign: "center",
+    },
+    valueCell: {
+        flex: 2, // Adjusted flex value
     },
     confirmBtn: {
-        width: "50%",
-        marginLeft: 60,
-        marginTop: 10,
+        alignSelf: "center",
+        marginTop: 20,
+        marginBottom: 5,
     }
 });
 export default OrderAndChecklist;
