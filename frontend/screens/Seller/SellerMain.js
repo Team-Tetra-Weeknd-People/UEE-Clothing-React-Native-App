@@ -18,7 +18,8 @@ const SELLER_JOURNEY = "Journey";
 
 const Tab = createBottomTabNavigator();
 
-export default function SellerMain() {
+export default function SellerMain({route}) {
+    const {seller} = route.params;
     const navigation = useNavigation();
     return (
         <Tab.Navigator
@@ -71,7 +72,7 @@ export default function SellerMain() {
             <Tab.Screen name={SELLER_DASHBOARD.toUpperCase()} component={SellerDashboard} />
             <Tab.Screen name={SELLER_ORDERS.toUpperCase()} component={SellerOrders} />
             <Tab.Screen name={SELLER_JOURNEY.toUpperCase()} component={SellerJourney} />
-            <Tab.Screen name={SELLER_PROFILE.toUpperCase()} component={SellerProfile} />
+            <Tab.Screen name={SELLER_PROFILE.toUpperCase()} component={SellerProfile} initialParams={{seller:seller}}/>
         </Tab.Navigator>
     )
 }
