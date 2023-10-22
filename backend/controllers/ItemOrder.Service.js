@@ -298,6 +298,33 @@ export const getItemOrdersByManufacturerIDAndStatus = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+//get item orders by seller id
+export const getItemOrdersBySellerID = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const itemOrders = await ItemOrder.find({ sellerID: id });
+    for (let i = 0; i < itemOrders.length; i++) {
+      const item = await Item.find({ _id: itemOrders[i].itemID });
+      itemOrders[i].item = item[0];
+      const manufacturer = await Manufacturer.find({
+        _id: itemOrders[i].manufacturerID,
+      });
+      itemOrders[i].manufacturer = manufacturer[0];
+      const itemQAs = await ItemQA.find({ itemOrderID: itemOrders[i]._id });
+      itemOrders[i].itemQA = itemQAs;
+      const seller = await Seller.find({ _id: itemOrders[i].sellerID });
+      itemOrders[i].seller = seller[0];
+      const QAComplain = await ItemQAComplain.find({
+        itemOrderID: itemOrders[i]._id,
+      });
+      itemOrders[i].QAComplain = QAComplain;
+    }
+    res.status(200).json(itemOrders);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 export default {
   getItemOrders,
@@ -308,4 +335,5 @@ export default {
   getItemOrdersByManufacturerID,
   getItemOrdersByStatus,
   getItemOrdersByManufacturerIDAndStatus,
+  getItemOrdersBySellerID
 };

@@ -202,8 +202,7 @@ export default function LoginScreen() {
 
       {/* Fixed top bar for user type selection */}
       <View
-        className="w-full bg-white flex flex-row justify-between items-center"
-        style={{ borderBottomWidth: 1, borderBottomColor: "#1D1D27" }}
+        className="w-full bg-white flex flex-row justify-evenly items-center"
       >
         {userTypes.map((type) => (
           <TouchableOpacity
@@ -211,7 +210,7 @@ export default function LoginScreen() {
             onPress={() => selectType(type)}
             style={{
               height: 40,
-              borderBottomWidth: selectedType === type ? 3 : 1,
+              borderBottomWidth: selectedType === type ? 5 : 1,
               borderBottomColor:
                 selectedType === type ? "#1D1D27" : "transparent",
               padding: 5,
@@ -224,7 +223,7 @@ export default function LoginScreen() {
               style={{
                 fontSize: 12,
                 fontFamily: "Montserrat-SemiBold",
-                color: "#1D1D27",
+                color: selectedType === type ? "#1D1D27" : "grey",
               }}
             >
               {type}

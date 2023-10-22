@@ -17,5 +17,8 @@ router.get(
   "/manufacturerID/:id/status/:status",
   ItemOrderController.getItemOrdersByManufacturerIDAndStatus
 );
-
+router.get(
+  "/sellerID/:id",
+  ItemOrderController.getItemOrdersBySellerID
+);
 export default router;
