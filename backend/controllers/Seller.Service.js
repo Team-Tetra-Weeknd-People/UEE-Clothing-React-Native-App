@@ -79,7 +79,7 @@ export const loginSeller = async (req, res) => {
           "test",
           { expiresIn: "1h" }
         );
-        res.status(200).json({ result: seller, token });
+        res.status(200).json({ result: seller, token, user: "SELLER" });
       } else {
         res.status(400).json({ message: "Invalid credentials" });
       }
@@ -89,6 +89,44 @@ export const loginSeller = async (req, res) => {
   }
 };
 
+// Handle level
+export const handleLevel = async (req, res) => {
+  const { id } = req.params;
+  const { points, count } = req.body; // count is up or down
+
+  // get supplier
+  const seller = await Seller.findById(id);
+
+  // update points
+  if (count === "up") {
+    seller.points = parseFloat(seller.points) + parseFloat(points);
+  } else {
+    seller.points = parseFloat(seller.points) - parseFloat(points);
+  }
+
+  // if points is greater than 100 then level up and reset points
+  if (seller.points >= 100) {
+    seller.points = 0;
+    seller.level = parseFloat(seller.level) + 1;
+  }
+
+  // if points is less than 0 then level down and reset points
+  if (seller.points < 0) {
+    seller.points = 0;
+    seller.level = parseFloat(seller.level) - 1;
+  }
+
+  if (seller.level < 0) {
+    seller.level = 0;
+  }
+
+  // update supplier
+  const updatedSeller = await Seller.findByIdAndUpdate(id, seller, {
+    new: true,
+  });
+  res.json(updatedSeller);
+};
+
 export default {
   getSellers,
   getSeller,
@@ -96,4 +134,5 @@ export default {
   updateSeller,
   deleteSeller,
   loginSeller,
+  handleLevel,
 };

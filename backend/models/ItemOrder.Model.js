@@ -28,6 +28,14 @@ const ItemOrderSchema = new Schema(
       type: Object,
       default: {},
     },
+    sellerID: {
+      type: String,
+      required: true,
+    },
+    seller: {
+      type: Object,
+      default: {},
+    },
     status: {
       type: String,
       default: "Pending",
@@ -39,6 +47,10 @@ const ItemOrderSchema = new Schema(
         "Delivered",
         "Assuered",
       ],
+    },
+    itemQA: {
+      type: Array,
+      default: [],
     },
     QAComplain: {
       type: Array,

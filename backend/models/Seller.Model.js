@@ -25,6 +25,18 @@ const SellerSchema = new Schema(
       type: String,
       required: true,
     },
+    points: {
+      type: Number,
+      default: 0,
+    },
+    level: {
+      type: Number,
+      default: 0,
+    },
+    rating: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: {

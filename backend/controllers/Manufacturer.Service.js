@@ -85,7 +85,9 @@ export const loginManufacturer = async (req, res) => {
           "test",
           { expiresIn: "1h" }
         );
-        res.status(200).json({ result: manufacturer, token });
+        res
+          .status(200)
+          .json({ result: manufacturer, token, user: "MANUFACTURER" });
       } else {
         res.status(400).json({ message: "Invalid credentials" });
       }
@@ -95,6 +97,47 @@ export const loginManufacturer = async (req, res) => {
   }
 };
 
+// handle level
+export const handleLevel = async (req, res) => {
+  const { id } = req.params;
+  const { points, count } = req.body; // count is up or down
+
+  const manufacturer = await Manufacturer.findById(id);
+
+  // update points
+  if (count === "up") {
+    manufacturer.points = parseFloat(manufacturer.points) + parseFloat(points);
+  } else {
+    manufacturer.points = parseFloat(manufacturer.points) - parseFloat(points);
+  }
+
+  // if points is greater than 100 then level up and reset points
+  if (manufacturer.points >= 100) {
+    manufacturer.points = 0;
+    manufacturer.level = parseFloat(manufacturer.level) + 1;
+  }
+
+  // if points is less than 0 then level down and reset points
+  if (manufacturer.points < 0) {
+    manufacturer.points = 0;
+    manufacturer.level = parseFloat(manufacturer.level) - 1;
+  }
+
+  if (manufacturer.level < 0) {
+    manufacturer.level = 0;
+  }
+
+  // update supplier
+  const updatedManufacturer = await Manufacturer.findByIdAndUpdate(
+    id,
+    manufacturer,
+    {
+      new: true,
+    }
+  );
+  res.json(updatedManufacturer);
+};
+
 export default {
   getManufacturers,
   getManufacturer,
@@ -102,4 +145,5 @@ export default {
   updateManufacturer,
   deleteManufacturer,
   loginManufacturer,
+  handleLevel,
 };

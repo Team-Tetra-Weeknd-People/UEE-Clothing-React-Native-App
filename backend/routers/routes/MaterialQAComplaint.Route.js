@@ -12,5 +12,9 @@ router.get(
   "/materialOrderID/:id",
   MaterialQAComplaintController.getMaterialQAComplainsByMaterialOrderID
 );
+router.get(
+  "/QAid/:id",
+  MaterialQAComplaintController.getMaterialQAComplainsByQAid
+);
 
 export default router;

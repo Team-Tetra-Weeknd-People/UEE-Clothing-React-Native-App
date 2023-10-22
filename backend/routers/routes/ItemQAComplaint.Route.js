@@ -12,5 +12,6 @@ router.get(
   "/itemOrderID/:id",
   ItemQAComplaintController.getItemQAComplaintsByItemOrderID
 );
+router.get("/QAid/:id", ItemQAComplaintController.getItemQAComplaintsByQAid);
 
 export default router;

@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const ItemQAComplaintSchema = new Schema(
   {
+    itemOrderID: {
+      type: String,
+      required: true,
+    },
     itemID: {
       type: String,
       required: true,
@@ -33,4 +37,4 @@ const ItemQAComplaint = mongoose.model(
   ItemQAComplaintSchema
 );
 
-export default ItemQAComplaintSchema;
+export default ItemQAComplaint;

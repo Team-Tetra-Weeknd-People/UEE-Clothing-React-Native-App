@@ -18,7 +18,8 @@ const SELLER_JOURNEY = "Journey";
 
 const Tab = createBottomTabNavigator();
 
-export default function SellerMain() {
+export default function SellerMain({route}) {
+    const {seller} = route.params;
     const navigation = useNavigation();
     return (
         <Tab.Navigator
@@ -29,16 +30,16 @@ export default function SellerMain() {
                     let rn = route.name;
                     color = focused ? '#14D2B8' : '#1D1D27';
 
-                    if (rn === SELLER_DASHBOARD) {
+                    if (rn === SELLER_DASHBOARD.toUpperCase()) {
                         iconName = focused ? 'grid' : 'grid-outline';
 
-                    } else if (rn === SELLER_ORDERS) {
+                    } else if (rn === SELLER_ORDERS.toUpperCase()) {
                         iconName = focused ? 'layers' : 'layers-outline';
 
-                    } else if (rn === SELLER_PROFILE) {
+                    } else if (rn === SELLER_PROFILE.toUpperCase()) {
                         iconName = focused ? 'person-circle' : 'person-circle-outline';
 
-                    } else if (rn === SELLER_JOURNEY) {
+                    } else if (rn === SELLER_JOURNEY.toUpperCase()) {
                         iconName = focused ? 'pulse' : 'pulse-outline';
                         
 
@@ -47,8 +48,9 @@ export default function SellerMain() {
                 },
                 tabBarActiveTintColor: '#14D2B8',
                 tabBarInactiveTintColor: '#1D1D27',
-                tabBarLabelStyle: { paddingBottom: 10, fontSize: 12, fontFamily: 'Montserrat-SemiBold' },
+                tabBarLabelStyle: { paddingBottom: 10, fontSize: 10, fontFamily: 'Montserrat-SemiBold', letterSpacing: 1},
                 tabBarStyle: { padding: 10, height: 75 },
+                tabBarHideOnKeyboard: true,
                 headerTitleAlign: 'center',
                 headerStyle: {
                     backgroundColor: '#1D1D27',
@@ -67,11 +69,10 @@ export default function SellerMain() {
                     </Text>
                 ),
             })}>
-
-            <Tab.Screen name={SELLER_DASHBOARD} component={SellerDashboard} />
-            <Tab.Screen name={SELLER_ORDERS} component={SellerOrders} />
-            <Tab.Screen name={SELLER_JOURNEY} component={SellerJourney} />
-            <Tab.Screen name={SELLER_PROFILE} component={SellerProfile} />
+            <Tab.Screen name={SELLER_DASHBOARD.toUpperCase()} component={SellerDashboard} />
+            <Tab.Screen name={SELLER_ORDERS.toUpperCase()} component={SellerOrders} />
+            <Tab.Screen name={SELLER_JOURNEY.toUpperCase()} component={SellerJourney} />
+            <Tab.Screen name={SELLER_PROFILE.toUpperCase()} component={SellerProfile} initialParams={{seller:seller}}/>
         </Tab.Navigator>
     )
 }

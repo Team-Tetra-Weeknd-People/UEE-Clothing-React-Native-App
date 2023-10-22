@@ -78,6 +78,19 @@ export const getItemQAComplaintsByItemOrderID = async (req, res) => {
   }
 };
 
+// get QA complains by QAid
+export const getItemQAComplaintsByQAid = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const itemQAComplains = await ItemQAComplaint.find({
+      QAid: id,
+    });
+    res.status(200).json(itemQAComplains);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export default {
   getItemQAComplaints,
   getItemQAComplaint,
@@ -85,4 +98,5 @@ export default {
   updateItemQAComplaint,
   deleteItemQAComplaint,
   getItemQAComplaintsByItemOrderID,
+  getItemQAComplaintsByQAid,
 };

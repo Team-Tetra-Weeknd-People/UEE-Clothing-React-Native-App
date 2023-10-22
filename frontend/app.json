@@ -1,6 +1,21 @@
 {
   "expo": {
-    "name": "material-inspector",
-    "slug": "material-inspector"
+    "name": "Material Inspector",
+    "slug": "material-inspector",
+    "privacy": "public",
+    "android": {
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ]
   }
 }

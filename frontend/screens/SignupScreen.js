@@ -66,35 +66,6 @@ export default function SignupScreen() {
       keyboardDidHideListener.remove();
     };
   }, []);
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const styles = StyleSheet.create({
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "white", // Change the background color as needed
-    },
-  });
-  useEffect(() => {
-    async function loadFont() {
-      await Font.loadAsync({
-        "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
-        "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
-        "Montserrat-ExtraBold": require("../assets/fonts/Montserrat-ExtraBold.ttf"),
-      });
-      setIsFontLoaded(true);
-    }
-
-    loadFont();
-  }, []);
-
-  if (!isFontLoaded) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1D1D27" />
-      </View>
-    );
-  }
 
   async function signUp() {
     // check all fields are filled
@@ -248,13 +219,16 @@ export default function SignupScreen() {
       <View className="h-full w-full flex justify-around pt-30">
         {/* title */}
         <View className="flex items-center">
-          <Animated.Text
-            entering={FadeInUp.duration(1000).springify()}
-            className="text-white font-bold tracking-wider text-5xl"
-            style={isKeyboardActive && { color: "#1D1D27", marginBottom: 120 }}
-          >
-            Sign Up
-          </Animated.Text>
+          {!isKeyboardActive && (
+            <Animated.View
+              entering={FadeInDown.delay(200).duration(1000).springify()}
+              className="flex items-center"
+            >
+              <Text className="text-4xl font-bold text-slate-900 text-white">
+                Create Account
+              </Text>
+            </Animated.View>
+          )}
         </View>
 
         {/* form */}
