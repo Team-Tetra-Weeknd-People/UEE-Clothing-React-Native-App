@@ -9,6 +9,6 @@ router.get("/:id", SellerController.getSeller);
 router.put("/:id", SellerController.updateSeller);
 router.delete("/:id", SellerController.deleteSeller);
 router.post("/login", SellerController.loginSeller);
-router.put("/handleLevel/:id", SellerController.handleLevel);
+router.post("/handleLevel/:id", SellerController.handleLevel);
 
 export default router;
