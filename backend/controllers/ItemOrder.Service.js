@@ -127,18 +127,27 @@ export const updateItemOrder = async (req, res) => {
 
   const QAs = itemOrder.itemQA;
 
-  console.log(QAs);
+  // console.log(itemOrder.itemQA);
 
-  for (let i = 0; i < QAs.length; i++) {
-    //update OrderQA status
-    ItemQA.findByIdAndUpdate(QAs[i]._id, QAs[i], {
-      new: true,
-    });
+  if (QAs) {
+    for (let i = 0; i < QAs.length; i++) {
+      //update OrderQA status
+      // console.log(QAs[i]);
+      try {
+        const qa = await ItemQA.findByIdAndUpdate(QAs[i]._id, QAs[i], {
+          new: true,
+        });
+        console.log(qa);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   const updatedItemOrder = await ItemOrder.findByIdAndUpdate(id, itemOrder, {
     new: true,
   });
+
   res.json(updatedItemOrder);
 };
 
