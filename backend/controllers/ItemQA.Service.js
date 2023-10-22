@@ -41,7 +41,7 @@ export const updateItemQA = async (req, res) => {
   const { id } = req.params;
   const itemQA = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!ItemQA.findById(req.params.id))
     return res.status(404).send("No itemQA with that id");
 
   const updatedItemQA = await ItemQA.findByIdAndUpdate(id, itemQA, {
@@ -54,7 +54,7 @@ export const updateItemQA = async (req, res) => {
 export const deleteItemQA = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!ItemQA.findById(req.params.id))
     return res.status(404).send("No itemQA with that id");
 
   await ItemQA.findByIdAndRemove(id);
