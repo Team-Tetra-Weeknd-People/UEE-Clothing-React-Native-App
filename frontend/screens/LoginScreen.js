@@ -297,7 +297,7 @@ export default function LoginScreen() {
           >
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.push("Signup")}>
-              <Text className="text-sky-600">SignUp</Text>
+              <Text className="text-sky-600">Sign Up</Text>
             </TouchableOpacity>
           </Animated.View>
         </View>

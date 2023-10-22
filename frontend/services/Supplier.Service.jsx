@@ -49,6 +49,14 @@ export const loginSupplier = (data) => {
   });
 };
 
+export const handleLevelSupplier = (data) => {
+  return axios.post(url.SUPPLIER_HANDLE_LEVEL_URL, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 export default {
   getSuppliers,
   getSupplier,
@@ -56,4 +64,5 @@ export default {
   updateSupplier,
   deleteSupplier,
   loginSupplier,
+  handleLevelSupplier,
 };
