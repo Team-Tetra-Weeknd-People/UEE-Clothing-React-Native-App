@@ -7,6 +7,7 @@ import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import ItemOrderService from "../../../../services/ItemOrder.Service";
 import ItemQAComplaintsService from "../../../../services/ItemQAComplaints.Service";
+import ItemQAService from "../../../../services/ItemQA.service";
 
 const OrderAndChecklist = () => {
     const [isAllChecked, setIsAllChecked] = useState(false);
@@ -82,7 +83,7 @@ const OrderAndChecklist = () => {
         navigation.navigate("JOURNEY", { orderId: orderId });
     };
 
-    const markAsChecked = (attribute) => {
+    const markAsChecked = (attributeID) => {
         Alert.alert(
             "Quality is Okay?",
             "Are you sure you want to delete the complaint and mark as checked?",
@@ -94,20 +95,20 @@ const OrderAndChecklist = () => {
                 },
                 {
                     text: "OK",
-                    onPress: () => {deleteComplaint(attribute)}
+                    onPress: () => {deleteComplaint(attributeID)}
                 },
             ],
             { cancelable: false }
         );
     };
 
-    const deleteComplaint = (attribute) => {
-        ItemQAComplaintsService.getItemComplaintByQA(attribute._id)
+    const deleteComplaint = (attributeID) => {
+        ItemQAComplaintsService.getItemComplaintByQA(attributeID)
         .then((res) => {
             ItemQAComplaintsService.deleteItemComplaint(res.data[0]._id)
             .then((res) => {
-                console.log(res.data + "deleted");
-                ItemQAService.updateItemQA(attribute._id, {
+                console.log("deleted");
+                ItemQAService.updateItemQA(attributeID, {
                     status: "Checked",
                 }).then((res) => {
                     console.log(res.data);
@@ -251,7 +252,7 @@ const OrderAndChecklist = () => {
                                     ) : (
                                         <SlateButton
                                             title= "Mark as Checked"
-                                            onPress={() => markAsChecked(attribute)}
+                                            onPress={() => markAsChecked(attribute._id)}
                                         />
                                     )}
                                 </View>
