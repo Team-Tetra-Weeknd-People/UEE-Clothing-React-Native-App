@@ -264,6 +264,48 @@ export const getMaterialOrdersBySupplierIDAndStatus = async (req, res) => {
   }
 };
 
+export const getMaterialOrdersByManufacturerID = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const materialOrders = await MaterialOrder.find({ manufacturerID: id });
+    for (let i = 0; i < materialOrders.length; i++) {
+      //material
+      const material = await Material.find({
+        _id: materialOrders[i].materialID,
+      });
+      materialOrders[i].material = material[0];
+
+      //supplier
+      const supplier = await Supplier.find({
+        _id: materialOrders[i].supplierID,
+      });
+      materialOrders[i].supplier = supplier[0];
+
+      //materialQA
+      const materialQAs = await MaterialQA.find({
+        materialID: materialOrders[i].material._id,
+      });
+      materialOrders[i].materialQA = materialQAs;
+
+      //manufacturer
+      const manufacturer = await Manufacturer.find({
+        _id: materialOrders[i].manufacturerID,
+      });
+      materialOrders[i].manufacturer = manufacturer[0];
+
+      //QAComplain
+      const QAComplain = await MaterialQAComplain.find({
+        materialOrderID: materialOrders[i]._id,
+      });
+      materialOrders[i].QAComplain = QAComplain;
+    }
+    res.status(200).json(materialOrders);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+}
+
 export default {
   getMaterialOrders,
   getMaterialOrder,
@@ -273,4 +315,5 @@ export default {
   getMaterialOrdersBySupplierID,
   getMaterialOrdersByStatus,
   getMaterialOrdersBySupplierIDAndStatus,
+  getMaterialOrdersByManufacturerID
 };
