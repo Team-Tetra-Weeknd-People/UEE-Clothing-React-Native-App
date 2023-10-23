@@ -25,17 +25,17 @@ export const ITEM_ORDER_MANUFACTURER_STATUS_URL = (status, id) =>
 
 export const ITEM_QA_URL = `${BASE_URL}/itemQAs`;
 export const ITEM_QA_ID_URL = (id) => `${BASE_URL}/itemQAs/${id}`;
-export const ITEM_QA_GETONE_URL = (id) => `${BASE_URL}/itemQAs/getOne${id}`;
+export const ITEM_QA_GETONE_URL = (id) => `${BASE_URL}/itemQAs/getOne/${id}`;
 export const ITEM_QA_ITEM_URL = (id) => `${BASE_URL}/itemQAs/itemID/${id}`;
 
-export const ITEM_QA_COMPLAINTS_URL = `${BASE_URL}/itemQAComplaints`;
-export const ITEM_QA_COMPLAINTS_ID_URL = `${BASE_URL}/itemQAComplaints/`;
+export const ITEM_QA_COMPLAINTS_URL = `${BASE_URL}/itemComplaints`;
+export const ITEM_QA_COMPLAINTS_ID_URL = (id)=> `${BASE_URL}/itemComplaints/${id}`;
 export const ITEM_QA_COMPLAINTS_GETONE_URL = (id) =>
-  `${BASE_URL}/itemQAComplaints/getOne${id}`;
+  `${BASE_URL}/itemComplaints/getOne${id}`;
 export const ITEM_QA_COMPLAINTS_ORDER_URL = (id) =>
-  `${BASE_URL}/itemQAComplaints/itemOrderID/${id}`;
+  `${BASE_URL}/itemComplaints/itemOrderID/${id}`;
 export const ITEM_QA_COMPLAINTS_QA_URL = (id) =>
-  `${BASE_URL}/itemQAComplaints/QAid/${id}`;
+  `${BASE_URL}/itemComplaints/QAid/${id}`;
 
 export const MATERIAL_URL = `${BASE_URL}/materials`;
 export const MATERIAL_ID_URL = (id) => `${BASE_URL}/materials/${id}`;

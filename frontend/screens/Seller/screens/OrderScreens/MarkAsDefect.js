@@ -5,12 +5,15 @@ import ItemQAComplaintsService from '../../../../services/ItemQAComplaints.Servi
 import ItemQAService from '../../../../services/ItemQA.service';
 import BigSlateButton from '../../../../components/BigSlateButton';
 import { Entypo, Ionicons } from '@expo/vector-icons';
+import GreenButton from '../../../../components/GreenButton';
+import {firebase} from '../../../../firebaseConfig';
 
 const MarkAsDefect = ({ route }) => {
   const orderId = route.params.orderId;
   const qualityAttributeId = route.params.attributeId;
   const [qulaityAttributeDetails, setQualityAttributesDetails] = useState({});
   const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [complaint, setComplaint] = useState({});
   const [description, setDescription] = useState('');
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
@@ -33,9 +36,9 @@ const MarkAsDefect = ({ route }) => {
     setRefreshing(true);
     ItemQAComplaintsService.getItemComplaintByQA(qualityAttributeId)
       .then((res) => {
-        setImage(res.data.image);
-        setComplaint(res.data);
-        setDescription(res.data.complain);
+        setImage(res.data[0].image);
+        setComplaint(res.data[0]);
+        setDescription(res.data[0].complain);
       })
       .catch((error) => {
         setComplaint(null);
@@ -82,12 +85,61 @@ const MarkAsDefect = ({ route }) => {
       quality: 1,
     });
 
-    console.log(result);
+    console.log(result.assets[0].uri);
 
     if (!result.canceled) {
-      setImage(result.uri);
+      setImage(result.assets[0].uri);
     }
   };
+
+  const uploadImage = async () => {
+    setUploading(true);
+    const response = await fetch(image);
+    const blob = await response.blob();
+    const filename = image.substring(image.lastIndexOf('/') + 1);
+    const storageRef = firebase.storage().ref().child(filename);
+    await storageRef.put(blob);
+
+    try {
+      const url = await storageRef.getDownloadURL();
+      setUploading(false);
+      setImage(url);
+      const data = {
+        QAid: qualityAttributeId,
+        image: url,
+        complain: description,
+        itemOrderID: orderId,
+        itemID: qulaityAttributeDetails.itemID
+      };
+      
+      if (complaint == null) {
+        ItemQAComplaintsService.updateItemComplaint(complaint._id, data)
+          .then((res) => {
+            alert('Complaint Updated Successfully');
+          })
+          .catch((error) => {
+            console.error('Error fetching orders:', error);
+          });
+      } else {
+        console.log('else ----------------------------------');
+        console.log(data);
+        ItemQAComplaintsService.createItemComplaint(data).then((res) => {
+          ItemQAService.updateItemQA(qualityAttributeId, {
+            status: 'Defect',
+          }).then((res) => {
+            alert('Complaint Created Successfully');
+          }
+          ).catch((error) => {
+            console.error('Error Creating Complaint:', error);
+          });
+        });
+        
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   if (!isFontLoaded) {
     return (
       <View style={styles.loadingContainer}>
@@ -113,12 +165,13 @@ const MarkAsDefect = ({ route }) => {
             {qulaityAttributeDetails.qaName.toUpperCase()} : {qulaityAttributeDetails.qaDescription.toUpperCase()}</Text>
         </View>
         {image ?
-          <>
             <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15 }} />
-            <Text style={styles.noImageText}>SELECT AN IMAGE</Text></>
-          : <><Ionicons name="image-outline" size={200} color="black" style={{ alignSelf: 'center' }} />
-            <Text style={styles.noImageText}>SELECT AN IMAGE</Text></>}
-        <View style={styles.buttonContainer}>
+          : <Ionicons name="image-outline" size={200} color="black" style={{ alignSelf: 'center' }} />}
+        
+      </View>
+      <View>
+      <Text style={styles.noImageText}>CAPTURE PROOF</Text>
+      <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.picBtns} onPress={takePhoto}>
             <Ionicons name="camera" size={50} color="#14D2B8" style={{ alignSelf: 'center', marginHorizontal: 5 }} />
           </TouchableOpacity>
@@ -126,16 +179,18 @@ const MarkAsDefect = ({ route }) => {
             <Ionicons name="image" size={50} color="#14D2B8" style={{ alignSelf: 'center', marginHorizontal: 5 }} />
           </TouchableOpacity>
         </View>
-        <Text style={styles.subTitle}>COMPLAINT DESCRIPTION</Text>
+      </View>
+      <View style={styles.photoContainer}><Text style={styles.subTitle}>COMPLAINT DESCRIPTION</Text>
         <TextInput
         style={styles.descriptionInput}
         value={description}
         placeholder="Enter Complaint Description"
         onChangeText={text => setDescription(text)}
-      />
-      </View>
-
-
+        multiline={true}
+        numberOfLines={4}
+        textAlignVertical="top"
+      /></View>
+      <GreenButton style={{width: 'auto', alignSelf: 'center' , marginVertical: 10, marginBottom: 50}} title="SUBMIT DEFECT" onPress={() => {uploadImage()}} />
     </ScrollView>
   );
 };
@@ -214,7 +269,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginVertical: 5,
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#1D1D27',
   },
 });
 export default MarkAsDefect;
