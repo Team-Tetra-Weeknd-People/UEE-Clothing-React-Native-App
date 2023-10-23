@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/core';
 
 import ItemQAService from '../../../../services/ItemQA.service';
 
-
 export default function EditQA({ route }) {
     const { item } = route.params;
     const navigation = useNavigation();
