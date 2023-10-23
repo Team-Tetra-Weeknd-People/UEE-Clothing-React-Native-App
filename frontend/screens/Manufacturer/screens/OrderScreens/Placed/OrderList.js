@@ -4,7 +4,7 @@ import React from 'react'
 export default function OrderList() {
     return (
         <View>
-            <Text>OrderList</Text>
+            <Text>PlacedOrderList</Text>
         </View>
     )
 }

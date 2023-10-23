@@ -54,6 +54,8 @@ export const MATERIAL_ORDER_STATUS_URL = (status) =>
   `${BASE_URL}/materialOrders/status/${status}`;
 export const MATERIAL_ORDER_SUPPLIER_STATUS_URL = (status, id) =>
   `${BASE_URL}/materialOrders/supplierID/${id}/status/${status}`;
+export const MATERIAL_ORDER_BY_MANUFACTURER_URL = (id) =>
+  `${BASE_URL}/materialOrders/manufacturerID/${id}`;
 
 export const MATERIAL_QA_URL = `${BASE_URL}/materialQAs`;
 export const MATERIAL_QA_ID_URL = (id) => `${BASE_URL}/materialQAs/${id}`;
@@ -86,6 +88,6 @@ export const SUPPLIER_LOGIN_URL = `${BASE_URL}/suppliers/login`;
 export const SUPPLIER_HANDLE_LEVEL_URL = `${BASE_URL}/suppliers/handleLevel`;
 
 export const MANUFACTURER_URL = `${BASE_URL}/manufacturers`;
-export const MANUFACTURER_ID_URL = `${BASE_URL}/manufacturers/`;
+export const MANUFACTURER_ID_URL = (id) => `${BASE_URL}/manufacturers/${id}`;
 export const MANUFACTURER_LOGIN_URL = `${BASE_URL}/manufacturers/login`;
 export const MANUFACTURER_HANDLE_LEVEL_URL = `${BASE_URL}/manufacturers/handleLevel`;
