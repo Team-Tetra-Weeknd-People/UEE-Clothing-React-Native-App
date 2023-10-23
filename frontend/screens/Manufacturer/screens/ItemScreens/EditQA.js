@@ -2,33 +2,34 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 
-import MaterialQAService from '../../../../services/MaterialQA.Service';
+import ItemQAService from '../../../../services/ItemQA.service';
 
 export default function EditQA({ route }) {
     const { item } = route.params;
     const navigation = useNavigation();
 
-    const [QAname, setQAname] = useState(item.QAName);
-    const [QADescription, setQADescription] = useState(item.QADescription);
+    const [qaName, setQAname] = useState(item.qaName);
+    const [qaDescription, setQADescription] = useState(item.qaDescription);
+
 
     const handleSubmit = () => {
         //check if the fields are empty
-        if (!QAname || !QADescription) {
+        if (!qaName || !qaDescription) {
             alert('Please enter all the fields');
             return;
         }
 
         const data = {
-            QAName: QAname,
-            QADescription: QADescription,
-            materialID: item.materialID,
+            qaName: qaName,
+            qaDescription: qaDescription,
+            itemID: item.itemID,
         };
 
-        MaterialQAService.updateMaterialQA(item._id, data).then((value) => {
+        ItemQAService.updateItemQA(item._id, data).then((value) => {
             alert('QA Updated Successfully');
             navigation.navigate('ItemList');
         });
-    };
+    }
 
     return (
         <>
@@ -37,14 +38,14 @@ export default function EditQA({ route }) {
                 <View style={styles.addForm}>
                     <TextInput
                         placeholder="Enter QA Name"
-                        value={QAname}
+                        value={qaName}
                         onChangeText={setQAname}
                         style={{ borderWidth: 1, borderColor: 'gray', margin: 10, padding: 10 }}
                     />
 
                     <TextInput
                         placeholder="Enter QA Description"
-                        value={QADescription}
+                        value={qaDescription}
                         onChangeText={setQADescription}
                         style={{ borderWidth: 1, borderColor: 'gray', margin: 10, padding: 10 }}
                     />
