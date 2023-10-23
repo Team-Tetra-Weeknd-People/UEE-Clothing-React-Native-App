@@ -40,7 +40,7 @@ export const updateItemQAComplaint = async (req, res) => {
   const { id } = req.params;
   const itemQAComplain = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!ItemQAComplaint.findById(req.params.id))
     return res.status(404).send("No itemQAComplain with that id");
 
   const updatedItemQAComplaint = await ItemQAComplaint.findByIdAndUpdate(
@@ -57,6 +57,9 @@ export const updateItemQAComplaint = async (req, res) => {
 export const deleteItemQAComplaint = async (req, res) => {
   const { id } = req.params;
   try {
+    if (!ItemQAComplaint.findById(req.params.id))
+      return res.status(404).send("No itemQAComplain with that id");
+
     await ItemQAComplaint.findByIdAndRemove(id);
     res.json({ message: "ItemQAComplain deleted successfully." });
   } catch (error) {
