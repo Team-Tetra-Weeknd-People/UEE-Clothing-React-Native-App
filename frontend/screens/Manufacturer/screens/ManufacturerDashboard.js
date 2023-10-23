@@ -104,12 +104,12 @@ export default function ManufacturerDashboard() {
               <>
                 <View style={styles.table}>
                   {/* Data rows */}
-                  {receivedOrders.length > 0 && receivedOrders.map((order, index) => {
+                  {receivedOrders.length > 0 && receivedOrders.slice(0, 3).map((order, index) => {
                     return (
                       <View key={index} style={styles.row}>
                         <Text style={styles.cellMain}>{order.supplier.companyName}</Text>
                         <Text style={styles.cell}>$ {order.totalPrice}</Text>
-                        <Text style={styles.cell}>{order.totalPrice}</Text>
+                        <Text style={styles.cell}>{order.status}</Text>
                       </View>
                     );
                   })}
@@ -121,12 +121,12 @@ export default function ManufacturerDashboard() {
                 <View style={styles.table}>
                   {/* Data rows */}
 
-                  {placedOrders.length > 0 && placedOrders.map((order, index) => {
+                  {placedOrders.length > 0 && placedOrders.slice(0, 3).map((order, index) => {
                     return (
                       <View key={index} style={styles.row}>
                         <Text style={styles.cellMain}>{order.seller.companyName}</Text>
                         <Text style={styles.cell}>$ {order.totalPrice}</Text>
-                        <Text style={styles.cell}>{order.totalPrice}</Text>
+                        <Text style={styles.cell}>{order.status}</Text>
                       </View>
                     );
                   })}

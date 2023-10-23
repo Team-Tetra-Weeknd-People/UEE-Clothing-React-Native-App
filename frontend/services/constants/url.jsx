@@ -29,7 +29,8 @@ export const ITEM_QA_GETONE_URL = (id) => `${BASE_URL}/itemQAs/getOne/${id}`;
 export const ITEM_QA_ITEM_URL = (id) => `${BASE_URL}/itemQAs/itemID/${id}`;
 
 export const ITEM_QA_COMPLAINTS_URL = `${BASE_URL}/itemComplaints`;
-export const ITEM_QA_COMPLAINTS_ID_URL = (id)=> `${BASE_URL}/itemComplaints/${id}`;
+export const ITEM_QA_COMPLAINTS_ID_URL = (id) =>
+  `${BASE_URL}/itemComplaints/${id}`;
 export const ITEM_QA_COMPLAINTS_GETONE_URL = (id) =>
   `${BASE_URL}/itemComplaints/getOne${id}`;
 export const ITEM_QA_COMPLAINTS_ORDER_URL = (id) =>
@@ -74,16 +75,17 @@ export const MATERIAL_QA_COMPLAINTS_QA_URL = (id) =>
   `${BASE_URL}/materialQAComplaints/QAid/${id}`;
 
 export const PROCESS_MANAGER_URL = `${BASE_URL}/processManagers`;
-export const PROCESS_MANAGER_ID_URL = `${BASE_URL}/processManagers/`;
+export const PROCESS_MANAGER_ID_URL = (id) =>
+  `${BASE_URL}/processManagers/${id}`;
 export const PROCESS_MANAGER_LOGIN_URL = `${BASE_URL}/processManagers/login`;
 
 export const SELLER_URL = `${BASE_URL}/sellers`;
-export const SELLER_ID_URL = `${BASE_URL}/sellers/`;
+export const SELLER_ID_URL = (id) => `${BASE_URL}/sellers/${id}`;
 export const SELLER_LOGIN_URL = `${BASE_URL}/sellers/login`;
 export const SELLER_HANDLE_LEVEL_URL = `${BASE_URL}/sellers/handleLevel`;
 
 export const SUPPLIER_URL = `${BASE_URL}/suppliers`;
-export const SUPPLIER_ID_URL = `${BASE_URL}/suppliers/`;
+export const SUPPLIER_ID_URL = (id) => `${BASE_URL}/suppliers/${id}`;
 export const SUPPLIER_LOGIN_URL = `${BASE_URL}/suppliers/login`;
 export const SUPPLIER_HANDLE_LEVEL_URL = `${BASE_URL}/suppliers/handleLevel`;
 
