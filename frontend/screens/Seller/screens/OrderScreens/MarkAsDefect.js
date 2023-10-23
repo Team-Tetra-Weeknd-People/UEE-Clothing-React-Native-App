@@ -36,9 +36,9 @@ const MarkAsDefect = ({ route }) => {
     setRefreshing(true);
     ItemQAComplaintsService.getItemComplaintByQA(qualityAttributeId)
       .then((res) => {
-        setImage(res.data.image);
-        setComplaint(res.data);
-        setDescription(res.data.complain);
+        setImage(res.data[0].image);
+        setComplaint(res.data[0]);
+        setDescription(res.data[0].complain);
       })
       .catch((error) => {
         setComplaint(null);
@@ -104,19 +104,16 @@ const MarkAsDefect = ({ route }) => {
       const url = await storageRef.getDownloadURL();
       setUploading(false);
       setImage(url);
-      console.log(url);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const submitComplaint = async () => {
-    await uploadImage().then(() => {
+      const data = {
+        QAid: qualityAttributeId,
+        image: url,
+        complain: description,
+        itemOrderID: orderId,
+        itemID: qulaityAttributeDetails.itemID
+      };
+      
       if (complaint == null) {
-        ItemQAComplaintsService.updateItemComplaint(complaint._id, {
-          image: image,
-          complain: description,
-        })
+        ItemQAComplaintsService.updateItemComplaint(complaint._id, data)
           .then((res) => {
             alert('Complaint Updated Successfully');
           })
@@ -125,38 +122,22 @@ const MarkAsDefect = ({ route }) => {
           });
       } else {
         console.log('else ----------------------------------');
-        const data = {
-          QAid: qualityAttributeId,
-          image: image,
-          complain: description,
-          itemOrderID: orderId,
-          itemID: qulaityAttributeDetails.itemID
-        };
         console.log(data);
-        ItemQAComplaintsService.createItemComplaint(data)
-          .then((res) => {
-            console.log(res);
-            console.log('complain ----------------------------------');
-            ItemQAService.updateItemQA(qualityAttributeId, {
-              status: 'Defect',
-            }).then((res) => {
-              console.log(res);
-              alert('Complaint Created Successfully');
-            }
-            ).catch((error) => {
-              console.error('Error Creating Complaint 3:', error);
-            });
-            
-          })
-          .catch((error) => {
-            console.error('Error Creating Complaint 2:', error);
+        ItemQAComplaintsService.createItemComplaint(data).then((res) => {
+          ItemQAService.updateItemQA(qualityAttributeId, {
+            status: 'Defect',
+          }).then((res) => {
+            alert('Complaint Created Successfully');
+          }
+          ).catch((error) => {
+            console.error('Error Creating Complaint:', error);
           });
+        });
+        
       }
-    }).catch((error) => {
-      console.error('Error Creating Complaint 1:', error);
+    } catch (e) {
+      console.log(e);
     }
-    );
-    
   };
 
   if (!isFontLoaded) {
@@ -209,7 +190,7 @@ const MarkAsDefect = ({ route }) => {
         numberOfLines={4}
         textAlignVertical="top"
       /></View>
-      <GreenButton style={{width: 'auto', alignSelf: 'center' , marginVertical: 10, marginBottom: 50}} title="SUBMIT DEFECT" onPress={() => {submitComplaint()}} />
+      <GreenButton style={{width: 'auto', alignSelf: 'center' , marginVertical: 10, marginBottom: 50}} title="SUBMIT DEFECT" onPress={() => {uploadImage()}} />
     </ScrollView>
   );
 };

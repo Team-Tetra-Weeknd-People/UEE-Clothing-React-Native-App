@@ -28,7 +28,7 @@ export const ITEM_QA_ID_URL =(id) => `${BASE_URL}/itemQAs/${id}`;
 export const ITEM_QA_GETONE_URL = (id) => `${BASE_URL}/itemQAs/getOne/${id}`;
 export const ITEM_QA_ITEM_URL = (id) => `${BASE_URL}/itemQAs/itemID/${id}`;
 
-export const ITEM_QA_COMPLAINTS_URL = ()=>`${BASE_URL}/itemComplaints`;
+export const ITEM_QA_COMPLAINTS_URL = `${BASE_URL}/itemComplaints`;
 export const ITEM_QA_COMPLAINTS_ID_URL = (id)=> `${BASE_URL}/itemComplaints/${id}`;
 export const ITEM_QA_COMPLAINTS_GETONE_URL = (id) =>
   `${BASE_URL}/itemComplaints/getOne${id}`;
