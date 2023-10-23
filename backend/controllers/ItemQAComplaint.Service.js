@@ -56,13 +56,12 @@ export const updateItemQAComplaint = async (req, res) => {
 // Delete itemQAComplain
 export const deleteItemQAComplaint = async (req, res) => {
   const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send("No itemQAComplain with that id");
-
-  await ItemQAComplaint.findByIdAndRemove(id);
-
-  res.json({ message: "ItemQAComplain deleted successfully." });
+  try {
+    await ItemQAComplaint.findByIdAndRemove(id);
+    res.json({ message: "ItemQAComplain deleted successfully." });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
 };
 
 // get itemQAComplains by itemOrderID
