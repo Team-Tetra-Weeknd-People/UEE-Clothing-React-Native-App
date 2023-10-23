@@ -1,50 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 
-import MaterialQAService from '../../../../services/MaterialQA.Service';
+import ItemQAService from '../../../../services/ItemQA.service';
 
-export default function EditQA({ route }) {
+export default function AddQA({ route }) {
     const { item } = route.params;
     const navigation = useNavigation();
 
-    const [QAname, setQAname] = useState(item.QAName);
-    const [QADescription, setQADescription] = useState(item.QADescription);
+    const [qaName, setQAname] = useState('');
+    const [qaDescription, setQADescription] = useState('');
 
     const handleSubmit = () => {
         //check if the fields are empty
-        if (!QAname || !QADescription) {
+        if (!qaName || !qaDescription) {
             alert('Please enter all the fields');
             return;
         }
 
         const data = {
-            QAName: QAname,
-            QADescription: QADescription,
-            materialID: item.materialID,
+            qaName: qaName,
+            qaDescription: qaDescription,
+            itemID: item._id,
         };
 
-        MaterialQAService.updateMaterialQA(item._id, data).then((value) => {
-            alert('QA Updated Successfully');
+        ItemQAService.createItemQA(data).then((value) => {
+            alert('QA Added Successfully');
             navigation.navigate('ItemList');
         });
-    };
+    }
 
     return (
         <>
             <View>
-                <Text style={styles.title}>Edit Quality Attribute</Text>
+                <Text style={styles.title}>Add Quality Attribute</Text>
                 <View style={styles.addForm}>
                     <TextInput
                         placeholder="Enter QA Name"
-                        value={QAname}
+                        value={qaName}
                         onChangeText={setQAname}
                         style={{ borderWidth: 1, borderColor: 'gray', margin: 10, padding: 10 }}
                     />
 
                     <TextInput
                         placeholder="Enter QA Description"
-                        value={QADescription}
+                        value={qaDescription}
                         onChangeText={setQADescription}
                         style={{ borderWidth: 1, borderColor: 'gray', margin: 10, padding: 10 }}
                     />
@@ -55,6 +55,7 @@ export default function EditQA({ route }) {
         </>
     )
 }
+
 
 const styles = StyleSheet.create({
     container: {

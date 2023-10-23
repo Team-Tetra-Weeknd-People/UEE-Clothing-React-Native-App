@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { FontAwesome } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import MaterialQAService from '../../../../services/MaterialQA.Service';
-
 
 export default function AddQA({ route }) {
     const { item } = route.params;
     const navigation = useNavigation();
-    const [text, setText] = useState('');
 
     const [QAname, setQAname] = useState('');
     const [QADescription, setQADescription] = useState('');
