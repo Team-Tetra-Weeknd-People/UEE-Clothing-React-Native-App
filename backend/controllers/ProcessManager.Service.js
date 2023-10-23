@@ -43,7 +43,7 @@ export const updateProcessManager = async (req, res) => {
   const { id } = req.params;
   const processManager = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!ProcessManager.findById(req.params.id))
     return res.status(404).send("No processManager with that id");
 
   const updatedProcessManager = await ProcessManager.findByIdAndUpdate(
@@ -60,7 +60,7 @@ export const updateProcessManager = async (req, res) => {
 export const deleteProcessManager = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!ProcessManager.findById(req.params.id))
     return res.status(404).send("No processManager with that id");
 
   await ProcessManager.findByIdAndRemove(id);
