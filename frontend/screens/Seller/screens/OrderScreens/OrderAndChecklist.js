@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
-import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl } from "react-native";
+import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import ItemOrderService from "../../../../services/ItemOrder.Service";
+import ItemQAComplaintsService from "../../../../services/ItemQAComplaints.Service";
 
 const OrderAndChecklist = () => {
+    const [isAllChecked, setIsAllChecked] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
@@ -15,7 +17,8 @@ const OrderAndChecklist = () => {
       ItemOrderService.getItemOrderById(orderId)
             .then((res) => {
                 setOrder(res.data);
-                setQualityAttributes(res.data.itemQA || []);
+                setQualityAttributes(res.data.itemQA);
+                checkStatusOfAllQualityAttributes();
                 setIsFontLoaded(true);
             }).catch((error) => {
                 console.error('Error fetching order:', error);
@@ -37,12 +40,29 @@ const OrderAndChecklist = () => {
         ItemOrderService.getItemOrderById(orderId)
             .then((res) => {
                 setOrder(res.data);
-                setQualityAttributes(res.data.itemQA || []);
+                setQualityAttributes(res.data.itemQA);
                 setIsFontLoaded(true);
             }).catch((error) => {
                 console.error('Error fetching order:', error);
             });
     }, [orderId]);
+
+    useEffect(() => {
+        if(qualityAttributes.length > 0){
+            checkStatusOfAllQualityAttributes();
+        }
+        
+    }, [qualityAttributes]);
+
+    const checkStatusOfAllQualityAttributes = () => {
+        let isAllCheckedStat = true;
+        qualityAttributes.forEach((attribute) => {
+            if (attribute.status === "Pending") {
+                isAllCheckedStat = false;
+            }
+        });
+        setIsAllChecked(isAllCheckedStat);
+    };
 
     const toggleQualityAttributeStatus = (attributeId) => {
         const updatedAttributes = qualityAttributes.map((attribute) => {
@@ -56,9 +76,81 @@ const OrderAndChecklist = () => {
             return attribute;
         });
         setQualityAttributes(updatedAttributes);
+        checkStatusOfAllQualityAttributes();
     };
     const toOrderJourney = () => {
         navigation.navigate("JOURNEY", { orderId: orderId });
+    };
+
+    const markAsChecked = (attribute) => {
+        Alert.alert(
+            "Quality is Okay?",
+            "Are you sure you want to delete the complaint and mark as checked?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                },
+                {
+                    text: "OK",
+                    onPress: () => {deleteComplaint(attribute)}
+                },
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const deleteComplaint = (attribute) => {
+        ItemQAComplaintsService.getItemComplaintByQA(attribute._id)
+        .then((res) => {
+            ItemQAComplaintsService.deleteItemComplaint(res.data[0]._id)
+            .then((res) => {
+                console.log(res.data + "deleted");
+                ItemQAService.updateItemQA(attribute._id, {
+                    status: "Checked",
+                }).then((res) => {
+                    console.log(res.data);
+                    ItemOrderService.getItemOrderById(orderId)
+                    .then((res) => {
+                        setOrder(res.data);
+                        setQualityAttributes(res.data.itemQA);
+                        setIsFontLoaded(true);
+                    }).catch((error) => {
+                        console.error('Error fetching order:', error);
+                    });
+                }
+                ).catch((error) => {
+                    console.error('Error updating complaint:', error);
+                });
+            }
+            ).catch((error) => {
+                console.error('Error deleting complaint:', error);
+            });
+        }).catch((error) => {
+            console.error('Error fetching order:', error);
+        });
+    }
+
+    const saveStatusOfQA = () => {
+        setRefreshing(true);
+        ItemOrderService.updateItemOrderById(orderId, { itemQA: qualityAttributes})
+        .then((res) => {
+            console.log(res.data);
+        }).catch((error) => {
+            console.error('Error updating order:', error);
+        });
+        setTimeout(() => {
+            ItemOrderService.getItemOrderById(orderId)
+            .then((res) => {
+                setOrder(res.data);
+                setQualityAttributes(res.data.itemQA);
+                setIsFontLoaded(true);
+            }).catch((error) => {
+                console.error('Error fetching order:', error);
+            });
+            setRefreshing(false);
+          }, 2000);
     };
 
     const completeAssurance = () => {
@@ -159,14 +251,16 @@ const OrderAndChecklist = () => {
                                     ) : (
                                         <SlateButton
                                             title= "Mark as Checked"
-                                            onPress={() => toggleQualityAttributeStatus(attribute._id)}
+                                            onPress={() => markAsChecked(attribute)}
                                         />
                                     )}
                                 </View>
                             </View>
                         ))}
                     </View>
-                    <GreenButton style={styles.confirmBtn} title="Complete Assurance" onPress={completeAssurance} />
+                    {isAllChecked ? (<GreenButton style={styles.confirmBtn} title="Complete Assurance" onPress={completeAssurance} />) 
+                    : (<GreenButton style={styles.confirmBtn} title="Save Checklist" onPress={saveStatusOfQA} />)}
+                    
                 </View>
             </View>
         </ScrollView>

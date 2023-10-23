@@ -7,6 +7,7 @@ import BigSlateButton from '../../../../components/BigSlateButton';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import GreenButton from '../../../../components/GreenButton';
 import {firebase} from '../../../../firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
 
 const MarkAsDefect = ({ route }) => {
   const orderId = route.params.orderId;
@@ -20,6 +21,8 @@ const MarkAsDefect = ({ route }) => {
   const [statusLib, requestLibPermission] = ImagePicker.useMediaLibraryPermissions();
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  const navgiation = useNavigation();
 
   useEffect(() => {
     ItemQAService.getItemQA(qualityAttributeId)
@@ -128,6 +131,7 @@ const MarkAsDefect = ({ route }) => {
             status: 'Defect',
           }).then((res) => {
             alert('Complaint Created Successfully');
+            navgiation.navigate('OrderDetails', { orderId: orderId});
           }
           ).catch((error) => {
             console.error('Error Creating Complaint:', error);
