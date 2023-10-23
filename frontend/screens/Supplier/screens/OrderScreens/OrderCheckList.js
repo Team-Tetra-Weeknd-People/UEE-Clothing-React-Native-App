@@ -11,11 +11,7 @@ export default function OrderCheckList({ route }) {
     const navigation = useNavigation();
 
     const handleButtonClick = () => {
-        // Add the desired functionality when the button is clicked.
-        // For example, navigate to another screen.
-        // navigation.navigate('AnotherScreen');
         console.log("Button clicked");
-        // navigation.navigate("MarkAsDefect", { orderId: orderId });
     };
 
     return (

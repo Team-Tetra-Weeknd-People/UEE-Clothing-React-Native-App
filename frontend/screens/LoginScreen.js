@@ -103,7 +103,6 @@ export default function LoginScreen() {
           loginManufacturer(loginData)
             .then((res) => {
               if (res.status === 200) {
-                alert("Login Successful");
                 AsyncStorage.setItem("token", res.data.token);
                 AsyncStorage.setItem("user", res.data.user);
                 AsyncStorage.setItem("id", res.data.id)
@@ -121,7 +120,6 @@ export default function LoginScreen() {
         SupplierService.loginSupplier(loginData)
           .then((res) => {
             if (res.status === 200) {
-              alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
               AsyncStorage.setItem("id", res.data.id)
