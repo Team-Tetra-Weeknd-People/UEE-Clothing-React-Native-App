@@ -35,8 +35,8 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false);
   const [selectedType, setSelectedType] = useState("SUPPLIER"); // State to store the selected type
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("randula98@gmail.com");
+  const [password, setPassword] = useState("11111111");
 
   // Define the available user types
   const userTypes = ["SUPPLIER", "MANUFACTURER", "SELLER", "PROCESS MANAGER"];
@@ -96,7 +96,6 @@ export default function LoginScreen() {
       email: email,
       password: password,
     };
-    console.log(loginData);
 
     switch (selectedType) {
       case "MANUFACTURER":
@@ -104,9 +103,9 @@ export default function LoginScreen() {
           loginManufacturer(loginData)
             .then((res) => {
               if (res.status === 200) {
-                alert("Login Successful");
                 AsyncStorage.setItem("token", res.data.token);
                 AsyncStorage.setItem("user", res.data.user);
+                AsyncStorage.setItem("id", res.data.id)
                 navigation.navigate("ManufacturerMain");
               } else {
                 alert(res.data.message);
@@ -121,10 +120,10 @@ export default function LoginScreen() {
         SupplierService.loginSupplier(loginData)
           .then((res) => {
             if (res.status === 200) {
-              alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
-              // navigation.navigate("SupplierHome");
+              AsyncStorage.setItem("id", res.data.id)
+              navigation.navigate("SupplierMain");
             } else {
               alert(res.data.message);
             }
@@ -141,7 +140,9 @@ export default function LoginScreen() {
               alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
-              navigation.navigate("SellerMain", {seller : res.data.result});
+              AsyncStorage.setItem("seller", JSON.stringify(res.data.result)).then(() => {
+                navigation.navigate("SellerMain");
+              });
             } else {
               alert(res.data.message);
             }
@@ -158,6 +159,7 @@ export default function LoginScreen() {
               alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
+              AsyncStorage.setItem("id", res.data.id)
               // navigation.navigate("ProcessManagerHome");
             } else {
               alert(res.data.message);
@@ -202,8 +204,7 @@ export default function LoginScreen() {
 
       {/* Fixed top bar for user type selection */}
       <View
-        className="w-full bg-white flex flex-row justify-between items-center"
-        style={{ borderBottomWidth: 1, borderBottomColor: "#1D1D27" }}
+        className="w-full bg-white flex flex-row justify-evenly items-center"
       >
         {userTypes.map((type) => (
           <TouchableOpacity
@@ -211,7 +212,7 @@ export default function LoginScreen() {
             onPress={() => selectType(type)}
             style={{
               height: 40,
-              borderBottomWidth: selectedType === type ? 3 : 1,
+              borderBottomWidth: selectedType === type ? 5 : 1,
               borderBottomColor:
                 selectedType === type ? "#1D1D27" : "transparent",
               padding: 5,
@@ -224,7 +225,7 @@ export default function LoginScreen() {
               style={{
                 fontSize: 12,
                 fontFamily: "Montserrat-SemiBold",
-                color: "#1D1D27",
+                color: selectedType === type ? "#1D1D27" : "grey",
               }}
             >
               {type}

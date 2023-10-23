@@ -16,6 +16,11 @@ const ItemQASchema = new Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enums: ['Pending', 'Checked', 'Defect'],
+      default: 'Pending'
+    },
   },
   {
     timestamps: {

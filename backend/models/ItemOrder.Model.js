@@ -36,16 +36,24 @@ const ItemOrderSchema = new Schema(
       type: Object,
       default: {},
     },
+    supplier: {
+      type: Object,
+      default: {},
+    },
+    material: {
+      type: Object,
+      default: {},
+    },
     status: {
       type: String,
       default: "Pending",
       enums: [
         "Pending",
-        "Accepted",
-        "Confiremed",
+        "Confirmed",
+        "Sent",
         "Rejected",
-        "Delivered",
-        "Assuered",
+        "Received",
+        "Assured",
       ],
     },
     itemQA: {

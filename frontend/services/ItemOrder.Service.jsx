@@ -9,7 +9,7 @@ export const getItemOrders = () => {
   });
 };
 
-export const getItemOrder = id => {
+export const getItemOrderById = id => {
   return axios.get(url.ITEM_ORDER_GETONE_URL(id), {
     headers: {
       'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export const getItemOrder = id => {
   });
 };
 
-export const createItemOrder = data => {
+export const createItemOrderById = data => {
   return axios.post(url.ITEM_ORDER_URL, data, {
     headers: {
       'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const createItemOrder = data => {
   });
 };
 
-export const updateItemOrder = (id, data) => {
+export const updateItemOrderById = (id, data) => {
   return axios.put(url.ITEM_ORDER_ID_URL(id), data, {
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export const updateItemOrder = (id, data) => {
   });
 };
 
-export const deleteItemOrder = id => {
+export const deleteItemOrderById = id => {
   return axios.delete(url.ITEM_ORDER_ID_URL(id), {
     headers: {
       'Content-Type': 'application/json',
@@ -41,14 +41,20 @@ export const deleteItemOrder = id => {
   });
 };
 
-export const getItemOrderByManufacturer = id => {
+export const getItemOrderByManufacturerId = id => {
   return axios.get(url.ITEM_ORDER_MANUFACTURER_URL(id), {
     headers: {
       'Content-Type': 'application/json',
     },
   });
 };
-
+export const getItemOrderBySellerId = id => {
+  return axios.get(url.ITEM_ORDER_SELLER_URL(id), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 export const getItemOrderByStatus = status => {
   return axios.get(url.ITEM_ORDER_STATUS_URL(status), {
     headers: {
@@ -57,7 +63,7 @@ export const getItemOrderByStatus = status => {
   });
 };
 
-export const getItemOrderByManufacturerAndStatus = (status, id) => {
+export const getItemOrderByManufacturerIdAndStatus = (status, id) => {
   return axios.get(url.ITEM_ORDER_MANUFACTURER_STATUS_URL(status, id), {
     headers: {
       'Content-Type': 'application/json',
@@ -67,11 +73,12 @@ export const getItemOrderByManufacturerAndStatus = (status, id) => {
 
 export default {
   getItemOrders,
-  getItemOrder,
-  createItemOrder,
-  updateItemOrder,
-  deleteItemOrder,
-  getItemOrderByManufacturer,
+  getItemOrderById,
+  createItemOrderById,
+  updateItemOrderById,
+  deleteItemOrderById,
+  getItemOrderByManufacturerId,
   getItemOrderByStatus,
-  getItemOrderByManufacturerAndStatus,
+  getItemOrderByManufacturerIdAndStatus,
+  getItemOrderBySellerId
 };

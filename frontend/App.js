@@ -8,6 +8,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import SellerMain from "./screens/Seller/SellerMain";
 import ManufacturerMain from "./screens/Manufacturer/ManufacturerMain";
+import SupplierMain from "./screens/Supplier/SupplierMain";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -23,27 +24,27 @@ function App() {
       backgroundColor: "white", // Change the background color as needed
     },
   });
-    useEffect(() => {
-      async function loadFont() {
-        await Font.loadAsync({
-            'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
-            'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
-            'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
-            'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
-            'Aldrich-Regular': require('./assets/fonts/Aldrich-Regular.ttf'),
-        });
-        setIsFontLoaded(true);
-      }
-  
-      loadFont();
-    }, []);
-  
-    if (!isFontLoaded) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1D1D27" />
-        </View>
-      );
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
+        "Montserrat-SemiBold": require("./assets/fonts/Montserrat-SemiBold.ttf"),
+        "Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
+        "Montserrat-ExtraBold": require("./assets/fonts/Montserrat-ExtraBold.ttf"),
+        "Aldrich-Regular": require("./assets/fonts/Aldrich-Regular.ttf"),
+      });
+      setIsFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!isFontLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#1D1D27" />
+      </View>
+    );
   }
 
   return (
@@ -78,6 +79,8 @@ function App() {
         <Stack.Screen name="SellerMain" component={SellerMain} />
         {/* manufacturer */}
         <Stack.Screen name="ManufacturerMain" component={ManufacturerMain} />
+        {/* supplier */}
+        <Stack.Screen name="SupplierMain" component={SupplierMain} />
       </Stack.Navigator>
     </NavigationContainer>
   );

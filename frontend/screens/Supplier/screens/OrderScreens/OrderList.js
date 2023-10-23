@@ -1,71 +1,41 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ItemOrderService from '../../../../services/ItemOrder.Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const OrderList = () => {
-    
+import MaterialOrderService from '../../../../services/MaterialOrder.Service';
 
-    const [isFontLoaded, setIsFontLoaded] = useState(false);
+export default function OrderList() {
+
     const [searchText, setSearchText] = useState('');
-    const [seller, setSeller] = useState({});
     const navigation = useNavigation();
-    const [orders, setOrders] = useState([]); // Initialize orders as an empty array
+    const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         try {
-            AsyncStorage.getItem('seller').then((value) => {
-                setSeller(JSON.parse(value));
+            AsyncStorage.getItem('id').then((value) => {
+                MaterialOrderService.getMaterialOrderBySupplier(value)
+                    .then((value) => {
+                        setOrders(value.data || []);
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching orders:', error);
+                    });
             });
         } catch (e) {
             console.log(e);
         }
     }, []);
 
-    const [refreshing, setRefreshing] = useState(false);
-
-    const onRefresh = useCallback(() => {
-      setRefreshing(true);
-      ItemOrderService.getItemOrderBySellerId(seller._id)
-      .then((res) => {
-          setOrders(res.data);
-          setIsFontLoaded(true);
-      })
-      .catch((error) => {
-          console.error('Error fetching orders:', error);
-      });
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 2000);
-    }, [seller._id]);
-    useEffect(() => {
-            ItemOrderService.getItemOrderBySellerId(seller._id)
-            .then((res) => {
-                setOrders(res.data);
-                setIsFontLoaded(true);
-            })
-            .catch((error) => {
-                console.error('Error fetching orders:', error);
-            });
-    }, [seller._id]);
     // Filter orders based on the search text
     const filteredOrders = orders.filter((order) =>
         order._id.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const toOrderDetails = (id) => {
-        navigation.navigate('OrderDetails', { orderId: id});
-    };
-    if (!isFontLoaded) {
-        return (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#1D1D27" />
-          </View>
-        );
-      }
     return (
         <View style={styles.container}>
             <View style={styles.searchBarContainer}>
@@ -80,29 +50,28 @@ const OrderList = () => {
             {/* Headers */}
             <View style={styles.tableHeader}>
                 <Text style={styles.manufacturerHeader}>MANUFACTURER</Text>
-                <Text style={styles.supplierHeader}>SUPPLIER</Text>
                 <Text style={styles.valueHeader}>VALUE</Text>
                 <Text style={styles.statusHeader}>STATUS</Text>
+                <Text style={styles.QACell}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
             </View>
             {/* Body */}
             <FlatList
-             refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
                 data={filteredOrders}
                 keyExtractor={(item) => item._id.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.tableRow} onPress={()=>{toOrderDetails(item._id)}}>
+                    <TouchableOpacity style={styles.tableRow} onPress={() => {
+                        navigation.navigate('OrderCheckList', { order: item });
+                    }}>
                         <Text style={styles.manufacturerCell}>{item.manufacturer.companyName}</Text>
-                        <Text style={styles.supplierCell}>{item.supplier.companyName}</Text>
                         <Text style={styles.valueCell}>${item.totalPrice}</Text>
                         <Text style={styles.statusCell}>{item.status}</Text>
+                        <Text style={styles.QACell}>{item.QAComplain.length > 0 ? (<><MaterialIcons name="error" size={20} color="red" /></>) : <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>}</Text>
                     </TouchableOpacity>
                 )}
             />
         </View>
-    );
-};
+    )
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -130,12 +99,6 @@ const styles = StyleSheet.create({
             },
         }),
     },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white", // Change the background color as needed
-      },
     searchIcon: {
         paddingLeft: 5,
         paddingRight: 7,
@@ -215,5 +178,3 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
-
-export default OrderList;
