@@ -8,13 +8,13 @@ import { useNavigation } from "@react-navigation/native";
 import ManufacturerDashboard from "./screens/ManufacturerDashboard";
 import ManufacturerOrders from "./screens/ManufacturerOrders";
 import ManufacturerProfile from "./screens/ManufacturerProfile";
-import ManufacturerJourney from "./screens/ManufacturerJourney";
+import ManufacturerItems from "././screens/ManufacturerItems";
 
 //Screen names
 const MANUFACTURER_DASHBOARD = "Dashboard";
 const MANUFACTURER_ORDERS = "Orders";
 const MANUFACTURER_PROFILE = "Profile";
-const MANUFACTURER_JOURNEY = "Journey";
+const MANUFACTURER_ITEMS = "Items";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,8 +35,8 @@ export default function ManufacturerMain() {
             iconName = focused ? "layers" : "layers-outline";
           } else if (rn === MANUFACTURER_PROFILE) {
             iconName = focused ? "person-circle" : "person-circle-outline";
-          } else if (rn === MANUFACTURER_JOURNEY) {
-            iconName = focused ? "pulse" : "pulse-outline";
+          } else if (rn === MANUFACTURER_ITEMS) {
+            iconName = focused ? 'shirt' : 'shirt-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -74,7 +74,7 @@ export default function ManufacturerMain() {
         component={ManufacturerDashboard}
       />
       <Tab.Screen name={MANUFACTURER_ORDERS} component={ManufacturerOrders} />
-      <Tab.Screen name={MANUFACTURER_JOURNEY} component={ManufacturerJourney} />
+      <Tab.Screen name={MANUFACTURER_ITEMS} component={ManufacturerItems} />
       <Tab.Screen name={MANUFACTURER_PROFILE} component={ManufacturerProfile} />
     </Tab.Navigator>
   );

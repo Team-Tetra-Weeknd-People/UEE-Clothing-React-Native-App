@@ -35,8 +35,8 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false);
   const [selectedType, setSelectedType] = useState("SUPPLIER"); // State to store the selected type
 
-  const [email, setEmail] = useState("sudul.fernando@gmail.com");
-  const [password, setPassword] = useState("sudul123");
+  const [email, setEmail] = useState("randula98@gmail.com");
+  const [password, setPassword] = useState("11111111");
 
   // Define the available user types
   const userTypes = ["SUPPLIER", "MANUFACTURER", "SELLER", "PROCESS MANAGER"];
@@ -96,7 +96,6 @@ export default function LoginScreen() {
       email: email,
       password: password,
     };
-    console.log(loginData);
 
     switch (selectedType) {
       case "MANUFACTURER":
@@ -104,9 +103,9 @@ export default function LoginScreen() {
           loginManufacturer(loginData)
             .then((res) => {
               if (res.status === 200) {
-                alert("Login Successful");
                 AsyncStorage.setItem("token", res.data.token);
                 AsyncStorage.setItem("user", res.data.user);
+                AsyncStorage.setItem("id", res.data.id)
                 navigation.navigate("ManufacturerMain");
               } else {
                 alert(res.data.message);
@@ -121,10 +120,10 @@ export default function LoginScreen() {
         SupplierService.loginSupplier(loginData)
           .then((res) => {
             if (res.status === 200) {
-              alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
-              // navigation.navigate("SupplierHome");
+              AsyncStorage.setItem("id", res.data.id)
+              navigation.navigate("SupplierMain");
             } else {
               alert(res.data.message);
             }
@@ -160,6 +159,7 @@ export default function LoginScreen() {
               alert("Login Successful");
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
+              AsyncStorage.setItem("id", res.data.id)
               // navigation.navigate("ProcessManagerHome");
             } else {
               alert(res.data.message);

@@ -16,15 +16,15 @@ export const ITEM_ORDER_GETONE_URL = (id) =>
   `${BASE_URL}/itemOrders/getOne/${id}`;
 export const ITEM_ORDER_MANUFACTURER_URL = (id) =>
   `${BASE_URL}/itemOrders/manufacturerID/${id}`;
-  export const ITEM_ORDER_SELLER_URL = id =>
+export const ITEM_ORDER_SELLER_URL = (id) =>
   `${BASE_URL}/itemOrders/sellerID/${id}`;
-export const ITEM_ORDER_STATUS_URL = status =>
+export const ITEM_ORDER_STATUS_URL = (status) =>
   `${BASE_URL}/itemOrders/status/${status}`;
 export const ITEM_ORDER_MANUFACTURER_STATUS_URL = (status, id) =>
   `${BASE_URL}/itemOrders/manufacturerID/${id}/status/${status}`;
 
 export const ITEM_QA_URL = `${BASE_URL}/itemQAs`;
-export const ITEM_QA_ID_URL =(id) => `${BASE_URL}/itemQAs/${id}`;
+export const ITEM_QA_ID_URL = (id) => `${BASE_URL}/itemQAs/${id}`;
 export const ITEM_QA_GETONE_URL = (id) => `${BASE_URL}/itemQAs/getOne/${id}`;
 export const ITEM_QA_ITEM_URL = (id) => `${BASE_URL}/itemQAs/itemID/${id}`;
 
@@ -38,14 +38,14 @@ export const ITEM_QA_COMPLAINTS_QA_URL = (id) =>
   `${BASE_URL}/itemComplaints/QAid/${id}`;
 
 export const MATERIAL_URL = `${BASE_URL}/materials`;
-export const MATERIAL_ID_URL = `${BASE_URL}/materials/`;
+export const MATERIAL_ID_URL = (id) => `${BASE_URL}/materials/${id}`;
 export const MATERIAL_GET_ONE_URL = (id) =>
   `${BASE_URL}/materials/getOne/${id}`;
 export const MATERIAL_GET_BY_SUPPLIER_URL = (id) =>
-  `${BASE_URL}/materials/getBySupplier/${id}`;
+  `${BASE_URL}/materials/supplier/${id}`;
 
 export const MATERIAL_ORDER_URL = `${BASE_URL}/materialOrders`;
-export const MATERIAL_ORDER_ID_URL = `${BASE_URL}/materialOrders/`;
+export const MATERIAL_ORDER_ID_URL = (id) => `${BASE_URL}/materialOrders/${id}`;
 export const MATERIAL_ORDER_GETONE_URL = (id) =>
   `${BASE_URL}/materialOrders/getOne/${id}`;
 export const MATERIAL_ORDER_SUPPLIER_URL = (id) =>
@@ -56,7 +56,7 @@ export const MATERIAL_ORDER_SUPPLIER_STATUS_URL = (status, id) =>
   `${BASE_URL}/materialOrders/supplierID/${id}/status/${status}`;
 
 export const MATERIAL_QA_URL = `${BASE_URL}/materialQAs`;
-export const MATERIAL_QA_ID_URL = `${BASE_URL}/materialQAs/`;
+export const MATERIAL_QA_ID_URL = (id) => `${BASE_URL}/materialQAs/${id}`;
 export const MATERIAL_QA_GETONE_URL = (id) =>
   `${BASE_URL}/materialQAs/getOne/${id}`;
 export const MATERIAL_QA_ITEM_URL = (id) =>
