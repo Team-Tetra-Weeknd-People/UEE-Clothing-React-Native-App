@@ -25,7 +25,7 @@ export const ITEM_ORDER_MANUFACTURER_STATUS_URL = (status, id) =>
 
 export const ITEM_QA_URL = `${BASE_URL}/itemQAs`;
 export const ITEM_QA_ID_URL = `${BASE_URL}/itemQAs/`;
-export const ITEM_QA_GETONE_URL = (id) => `${BASE_URL}/itemQAs/getOne${id}`;
+export const ITEM_QA_GETONE_URL = (id) => `${BASE_URL}/itemQAs/getOne/${id}`;
 export const ITEM_QA_ITEM_URL = (id) => `${BASE_URL}/itemQAs/itemID/${id}`;
 
 export const ITEM_QA_COMPLAINTS_URL = `${BASE_URL}/itemQAComplaints`;

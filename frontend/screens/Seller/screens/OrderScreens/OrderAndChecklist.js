@@ -99,6 +99,9 @@ const OrderAndChecklist = () => {
                 <GreenButton title="Order Journey" onPress={toOrderJourney} />
             </View>
             <Text style={styles.idText}>{orderId} </Text>
+            <View style={{flexDirection: 'row', marginBottom: 4, justifyContent: "space-between", alignContent: 'center'}}>
+            <Text style={styles.title}>ORDER ITEM :</Text>
+            <Text style={styles.nameText}>{order.item.name} </Text></View>
             {/* Headers */}
             <View style={styles.tableHeader}>
                 <Text style={styles.manufacturerHeader}>MANUFACTURER</Text>
@@ -194,7 +197,12 @@ const styles = StyleSheet.create({
     idText: {
         fontFamily: "Montserrat-SemiBold",
         fontSize: 18,
-        marginBottom: 10,
+        marginBottom: 4,
+    },
+    nameText: {
+        fontFamily: "Montserrat-SemiBold",
+        fontSize: 18,
+        paddingTop: 5,
     },
     tableHeader: {
         flexDirection: "row",

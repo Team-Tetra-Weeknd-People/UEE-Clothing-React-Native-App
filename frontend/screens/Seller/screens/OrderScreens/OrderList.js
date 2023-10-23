@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, TextInput, FlatList, StyleSheet, ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,8 @@ import ItemOrderService from '../../../../services/ItemOrder.Service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderList = () => {
+    
+
     const [isFontLoaded, setIsFontLoaded] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [seller, setSeller] = useState({});
@@ -22,6 +24,23 @@ const OrderList = () => {
             console.log(e);
         }
     }, []);
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+      setRefreshing(true);
+      ItemOrderService.getItemOrderBySellerId(seller._id)
+      .then((res) => {
+          setOrders(res.data);
+          setIsFontLoaded(true);
+      })
+      .catch((error) => {
+          console.error('Error fetching orders:', error);
+      });
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 2000);
+    }, [seller._id]);
     useEffect(() => {
             ItemOrderService.getItemOrderBySellerId(seller._id)
             .then((res) => {
@@ -67,6 +86,9 @@ const OrderList = () => {
             </View>
             {/* Body */}
             <FlatList
+             refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
                 data={filteredOrders}
                 keyExtractor={(item) => item._id.toString()}
                 renderItem={({ item }) => (

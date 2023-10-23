@@ -1,11 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Platform } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Button, Image, Text, View, TextInput, Platform, ScrollView, RefreshControl, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import ItemQAComplaintsService from '../../../../services/ItemQAComplaints.Service';
+import ItemQAService from '../../../../services/ItemQA.service';
+import BigSlateButton from '../../../../components/BigSlateButton';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 
 const MarkAsDefect = ({ route }) => {
+  const orderId = route.params.orderId;
+  const qualityAttributeId = route.params.attributeId;
+  const [qulaityAttributeDetails, setQualityAttributesDetails] = useState({});
   const [image, setImage] = useState(null);
+  const [complaint, setComplaint] = useState({});
+  const [description, setDescription] = useState('');
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
   const [statusLib, requestLibPermission] = ImagePicker.useMediaLibraryPermissions();
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    ItemQAService.getItemQA(qualityAttributeId)
+      .then((res) => {
+        setQualityAttributesDetails(res.data);
+        setIsFontLoaded(true);
+      })
+      .catch((error) => {
+        console.error('Error fetching orders:', error);
+      });
+  }, [qualityAttributeId]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    ItemQAComplaintsService.getItemComplaintByQA(qualityAttributeId)
+      .then((res) => {
+        setImage(res.data.image);
+        setComplaint(res.data);
+        setDescription(res.data.complain);
+      })
+      .catch((error) => {
+        setComplaint(null);
+      });
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, [qualityAttributeId]);
+
+  useEffect(() => {
+    ItemQAComplaintsService.getItemComplaintByQA(qualityAttributeId)
+      .then((res) => {
+        setImage(res.data.image);
+        setComplaint(res.data);
+        setDescription(res.data.complain);
+      })
+      .catch((error) => {
+        setComplaint(null);
+      });
+  }, [qualityAttributeId]);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -33,18 +84,137 @@ const MarkAsDefect = ({ route }) => {
 
     console.log(result);
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImage(result.uri);
     }
   };
-
+  if (!isFontLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#1D1D27" />
+      </View>
+    );
+  }
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      <Button title="Take a photo" onPress={takePhoto} />
-      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-    </View>
+    <ScrollView style={styles.container} refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
+      <Text style={styles.title}>DEFECT</Text>
+      <Text style={styles.subTitle}>ORDER ID : {orderId}</Text>
+      <View style={styles.photoContainer}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom: image ? 10 : 0 }}>
+          <Entypo
+            name="circle-with-cross"
+            size={20}
+            color="red"
+            style={{ alignSelf: 'center', marginRight: 5 }}
+          />
+          <Text style={styles.defectHeading}>
+            {qulaityAttributeDetails.qaName.toUpperCase()} : {qulaityAttributeDetails.qaDescription.toUpperCase()}</Text>
+        </View>
+        {image ?
+          <>
+            <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15 }} />
+            <Text style={styles.noImageText}>SELECT AN IMAGE</Text></>
+          : <><Ionicons name="image-outline" size={200} color="black" style={{ alignSelf: 'center' }} />
+            <Text style={styles.noImageText}>SELECT AN IMAGE</Text></>}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.picBtns} onPress={takePhoto}>
+            <Ionicons name="camera" size={50} color="#14D2B8" style={{ alignSelf: 'center', marginHorizontal: 5 }} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.picBtns} onPress={pickImage}>
+            <Ionicons name="image" size={50} color="#14D2B8" style={{ alignSelf: 'center', marginHorizontal: 5 }} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.subTitle}>COMPLAINT DESCRIPTION</Text>
+        <TextInput
+        style={styles.descriptionInput}
+        value={description}
+        placeholder="Enter Complaint Description"
+        onChangeText={text => setDescription(text)}
+      />
+      </View>
+
+
+    </ScrollView>
   );
 };
-
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white", // Change the background color as needed
+  },
+  container: {
+    flex: 1,
+    padding: 16,
+    fontFamily: "Montserrat-Regular",
+  },
+  title: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 24,
+    letterSpacing: 1.5,
+  },
+  subTitle: {
+    fontFamily: 'Montserrat-SemiBold',
+    fontSize: 14,
+    marginVertical: 2,
+  },
+  photoContainer: {
+    paddingTop: 5,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    marginVertical: 10,
+    shadowColor: '#14D2B8',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  defectHeading: {
+    fontFamily: 'Montserrat-SemiBold',
+    fontSize: 14,
+    marginVertical: 2,
+    alignSelf: 'center',
+    color: 'red',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+    marginBottom: 20,
+  },
+  noImageText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 18,
+    marginVertical: 2,
+    alignSelf: 'center',
+    color: '#1D1D27',
+  },
+  picBtns: {
+    padding: 10,
+    backgroundColor: '#1D1D27',
+    borderRadius: 50,
+    marginHorizontal: 5,
+    shadowColor: '#14D2B8',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+  },
+  descriptionInput: {
+    borderWidth: 1,
+    borderColor: '#ccc9',
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 5,
+    fontFamily: 'Montserrat-Regular',
+  },
+});
 export default MarkAsDefect;
