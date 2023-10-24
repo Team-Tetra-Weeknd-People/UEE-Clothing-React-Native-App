@@ -10,7 +10,7 @@ export const getMaterialQAs = () => {
 };
 
 export const getMaterialQA = (id) => {
-  return axios.get(url.MATERIAL_QA_ID_URL(id), {
+  return axios.get(url.MATERIAL_QA_GETONE_URL(id), {
     headers: {
       "Content-Type": "application/json",
     },
