@@ -41,7 +41,7 @@ export const updateMaterialQAComplain = async (req, res) => {
   const { id } = req.params;
   const materialQAComplain = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!MaterialQAComplaint.findById(id))
     return res.status(404).send("No materialQAComplain with that id");
 
   const updatedMaterialQAComplain = await MaterialQAComplaint.findByIdAndUpdate(
@@ -58,7 +58,7 @@ export const updateMaterialQAComplain = async (req, res) => {
 export const deleteMaterialQAComplain = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!MaterialQAComplaint.findById(id))
     return res.status(404).send("No materialQAComplain with that id");
 
   await MaterialQAComplaint.findByIdAndRemove(id);
