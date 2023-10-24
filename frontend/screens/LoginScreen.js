@@ -160,7 +160,9 @@ export default function LoginScreen() {
               AsyncStorage.setItem("token", res.data.token);
               AsyncStorage.setItem("user", res.data.user);
               AsyncStorage.setItem("id", res.data.id)
-              // navigation.navigate("ProcessManagerHome");
+              AsyncStorage.setItem("processmanager", JSON.stringify(res.data.result)).then(() => {
+                navigation.navigate("ProcessManagerMain");
+              });
             } else {
               alert(res.data.message);
             }
