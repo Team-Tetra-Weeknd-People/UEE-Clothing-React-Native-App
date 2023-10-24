@@ -1,13 +1,18 @@
 import React from 'react';
-import { View, Button, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import JourneyLanding from './JourneyScreens/JourneyLanding';
+
+const Stack = createNativeStackNavigator();
 
 const SellerJourney = () => {
     return (
-        <View>
-            <Text>Seller Journey Screen</Text>
-        </View>
+        <Stack.Navigator
+            initialRouteName='JourneyLanding'
+            screenOptions={{ headerShown: false, }}
+        >
+            <Stack.Screen name="JourneyLanding" component={JourneyLanding}/>
+        </Stack.Navigator>
     );
 };
-
 export default SellerJourney;

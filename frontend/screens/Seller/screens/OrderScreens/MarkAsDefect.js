@@ -55,9 +55,9 @@ const MarkAsDefect = ({ route }) => {
   useEffect(() => {
     ItemQAComplaintsService.getItemComplaintByQA(qualityAttributeId)
       .then((res) => {
-        setImage(res.data.image);
-        setComplaint(res.data);
-        setDescription(res.data.complain);
+        setImage(res.data[0].image);
+        setComplaint(res.data[0]);
+        setDescription(res.data[0].complain);
       })
       .catch((error) => {
         setComplaint(null);
@@ -115,10 +115,11 @@ const MarkAsDefect = ({ route }) => {
         itemID: qulaityAttributeDetails.itemID
       };
       
-      if (complaint == null) {
+      if (complaint != null) {
         ItemQAComplaintsService.updateItemComplaint(complaint._id, data)
           .then((res) => {
             alert('Complaint Updated Successfully');
+            navgiation.navigate('OrderDetails', { orderId: orderId});
           })
           .catch((error) => {
             console.error('Error fetching orders:', error);
@@ -169,7 +170,7 @@ const MarkAsDefect = ({ route }) => {
             {qulaityAttributeDetails.qaName.toUpperCase()} : {qulaityAttributeDetails.qaDescription.toUpperCase()}</Text>
         </View>
         {image ?
-            <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15 }} />
+            <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15, borderWidth : 5, borderColor: 'black'}} />
           : <Ionicons name="image-outline" size={200} color="black" style={{ alignSelf: 'center' }} />}
         
       </View>
