@@ -9,6 +9,7 @@ import SignupScreen from "./screens/SignupScreen";
 import SellerMain from "./screens/Seller/SellerMain";
 import ManufacturerMain from "./screens/Manufacturer/ManufacturerMain";
 import SupplierMain from "./screens/Supplier/SupplierMain";
+import ProcessManagerMain from "./screens/ProcessManager/ProcessManagerMain";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -81,6 +82,8 @@ function App() {
         <Stack.Screen name="ManufacturerMain" component={ManufacturerMain} />
         {/* supplier */}
         <Stack.Screen name="SupplierMain" component={SupplierMain} />
+        {/* process manager */}
+        <Stack.Screen name="ProcessManagerMain" component={ProcessManagerMain} />
       </Stack.Navigator>
     </NavigationContainer>
   );
