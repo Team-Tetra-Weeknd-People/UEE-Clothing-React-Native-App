@@ -59,12 +59,12 @@ export default function ProcessManagerMain() {
                 headerTitle: () => (
                     <Text style={{
                         fontSize: 13,
-                        color: 'red',
+                        color: '#10E5CC',
                         fontFamily: 'Montserrat-SemiBold',
                         letterSpacing: 1,
                         flex: 1
                     }}>
-                        Seller
+                        Process Manager
                     </Text>
                 ),
             })}>
