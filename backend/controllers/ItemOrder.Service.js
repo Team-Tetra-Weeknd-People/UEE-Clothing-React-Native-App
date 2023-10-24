@@ -6,6 +6,9 @@ import Manufacturer from "../models/Manufacturer.Model.js";
 import Seller from "../models/Seller.Model.js";
 import Supplier from "../models/Supplier.Model.js";
 import Material from "../models/Material.Model.js";
+import MaterialOrder from "../models/MaterialOrder.Model.js";
+import MaterialQA from "../models/MaterialQA.Model.js";
+import MaterialQAComplain from "../models/MaterialQAComplaint.Model.js";
 
 // Get all itemOrders
 export const getItemOrders = async (req, res) => {
@@ -49,6 +52,25 @@ export const getItemOrders = async (req, res) => {
         itemOrderID: itemOrders[i]._id,
       });
       itemOrders[i].QAComplain = QAComplain;
+
+      //materialOrder
+      const materialOrder = await MaterialOrder.find({
+        _id: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialOrder = materialOrder[0];
+
+      //materialQA
+      const materialQA = await MaterialQA.find({
+        materialID: itemOrders[i].materialOrder.materialID,
+      });
+      itemOrders[i].materialQA = materialQA;
+
+      //materialQAComplaint
+      const materialQAComplaint = await MaterialQAComplain.find({
+        materialOrderID: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialQAComplaint = materialQAComplaint;
+
     }
     res.status(200).json(itemOrders);
   } catch (error) {
