@@ -11,7 +11,7 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import GreenButton from '../../../components/GreenButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ManagerProfile = () => {
+const ProcessManagerProfile = () => {
   const [manager, setManager] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [firstName, setFirstName] = useState('');
@@ -20,7 +20,7 @@ const ManagerProfile = () => {
 
   useEffect(() => {
     try{
-      AsyncStorage.getItem('manager').then((value) => {
+      AsyncStorage.getItem('processmanager').then((value) => {
         setManager(JSON.parse(value));
         setFirstName(JSON.parse(value).fname);
         setLastName(JSON.parse(value).lname);
@@ -93,7 +93,7 @@ const ManagerProfile = () => {
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>Email</Text>
-            <Text style={styles.value}>{seller.email}</Text>
+            <Text style={styles.value}>{manager.email}</Text>
           </View>
         </View>
         {isEditing && (
@@ -169,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ManagerProfile;
+export default ProcessManagerProfile;
