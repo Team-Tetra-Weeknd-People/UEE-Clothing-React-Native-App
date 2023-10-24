@@ -64,6 +64,22 @@ const ItemOrderSchema = new Schema(
       type: Array,
       default: [],
     },
+    materialOrderID: {
+      type: String,
+      required: true,
+    },
+    materialOrder: {
+      type: Object,
+      default: {},
+    },
+    materialQA: {
+      type: Array,
+      default: [],
+    },
+    materialQAComplaint: {
+      type: Array,
+      default: [],
+    },
   },
   {
     timestamps: {
