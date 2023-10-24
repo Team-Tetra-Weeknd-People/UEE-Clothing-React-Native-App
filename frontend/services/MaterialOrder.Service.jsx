@@ -10,7 +10,7 @@ export const getMaterialOrders = () => {
 };
 
 export const getMaterialOrder = (id) => {
-  return axios.get(url.MATERIAL_ORDER_ID_URL(id), {
+  return axios.get(url.MATERIAL_ORDER_GETONE_URL(id), {
     headers: {
       "Content-Type": "application/json",
     },
