@@ -107,7 +107,7 @@ export const updateMaterialOrder = async (req, res) => {
   const { id } = req.params;
   const materialOrder = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!MaterialOrder.findById(id))
     return res.status(404).send("No materialOrder with that id");
 
   const updatedMaterialOrder = await MaterialOrder.findByIdAndUpdate(
@@ -124,7 +124,7 @@ export const updateMaterialOrder = async (req, res) => {
 export const deleteMaterialOrder = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!MaterialOrder.findById(id))
     return res.status(404).send("No materialOrder with that id");
 
   await MaterialOrder.findByIdAndRemove(id);
