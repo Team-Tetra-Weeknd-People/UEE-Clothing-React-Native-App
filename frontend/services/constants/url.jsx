@@ -83,9 +83,9 @@ export const SELLER_HANDLE_LEVEL_URL = `${BASE_URL}/sellers/handleLevel`;
 export const SUPPLIER_URL = `${BASE_URL}/suppliers`;
 export const SUPPLIER_ID_URL = `${BASE_URL}/suppliers/`;
 export const SUPPLIER_LOGIN_URL = `${BASE_URL}/suppliers/login`;
-export const SUPPLIER_HANDLE_LEVEL_URL = `${BASE_URL}/suppliers/handleLevel`;
+export const SUPPLIER_HANDLE_LEVEL_URL= (id) =>`${BASE_URL}/suppliers/handleLevel/${id}`;
 
 export const MANUFACTURER_URL = `${BASE_URL}/manufacturers`;
 export const MANUFACTURER_ID_URL = `${BASE_URL}/manufacturers/`;
 export const MANUFACTURER_LOGIN_URL = `${BASE_URL}/manufacturers/login`;
-export const MANUFACTURER_HANDLE_LEVEL_URL = `${BASE_URL}/manufacturers/handleLevel`;
+export const MANUFACTURER_HANDLE_LEVEL_URL = (id) => `${BASE_URL}/manufacturers/handleLevel/${id}`;
