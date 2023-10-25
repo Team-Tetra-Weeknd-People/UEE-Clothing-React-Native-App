@@ -19,18 +19,19 @@ export default function OrderCheckList({ route }) {
             <ScrollView style={styles.container}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.title}>ORDER No: {order._id}</Text>
-
                 </View>
+                <Text style={styles.title}>Item Name : {order.item.name}</Text>
+                <Text style={styles.title}></Text>
                 {/* Headers */}
                 <View style={styles.tableHeader}>
-                    <Text style={styles.manufacturerHeader}>MANUFACTURER</Text>
+                    <Text style={styles.manufacturerHeader}>SUPPLIER</Text>
                     <Text style={styles.valueHeader}>VALUE</Text>
                     <Text style={styles.statusHeader}>STATUS</Text>
                     <Text style={styles.statusHeader}>PLACED DATE</Text>
                 </View>
                 {/* Body */}
                 <View style={styles.tableRow}>
-                    <Text style={styles.manufacturerCell}>{order.manufacturer.companyName}</Text>
+                    <Text style={styles.manufacturerCell}>{order.supplier.companyName}</Text>
                     <Text style={styles.valueCell}>${order.totalPrice}</Text>
                     <Text style={styles.statusCell}>{order.status}</Text>
                     <Text style={styles.statusCell}>{order.createdOn.slice(0, 10)}</Text>
@@ -89,13 +90,7 @@ export default function OrderCheckList({ route }) {
                                                     {/* image */}
                                                     <Image
                                                         source={{ uri: item.image }}
-                                                        style={{
-                                                            width: 200, // The initial width
-                                                            height: 100, // The initial height
-                                                            maxWidth: 200, // The maximum width
-                                                            maxHeight: 100, // The maximum height
-
-                                                        }}
+                                                        style={[{ width: 50, height: 50, marginBottom: 10, marginHorizontal: 12, margin: 5, borderWidth: 2, borderColor: 'black' }]}
                                                     />
                                                 </View>
                                             </View>
