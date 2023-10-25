@@ -6,6 +6,7 @@ import { useRoute } from "@react-navigation/native";
 import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import ItemOrderService from "../../../../services/ItemOrder.Service";
+import ManufacturerService from "../../../../services/Manufacturer.Service";
 
 const OrderAndChecklist = () => {
     const [refreshing, setRefreshing] = useState(false);
@@ -16,6 +17,7 @@ const OrderAndChecklist = () => {
             .then((res) => {
                 setOrder(res.data);
                 setQualityAttributes(res.data.itemQA || []);
+                setManufacturerID(res.data.manufacturerID);
                 setIsFontLoaded(true);
             }).catch((error) => {
                 console.error('Error fetching order:', error);
@@ -32,12 +34,16 @@ const OrderAndChecklist = () => {
 
     const [order, setOrder] = useState({});
     const [qualityAttributes, setQualityAttributes] = useState([]);
+    const [manufacturerID, setManufacturerID] = useState("");
+    const [points, setPoints] = useState(0);
+    const [count, setCount] = useState("");
 
     useEffect(() => {
         ItemOrderService.getItemOrderById(orderId)
             .then((res) => {
                 setOrder(res.data);
                 setQualityAttributes(res.data.itemQA || []);
+                setManufacturerID(res.data.manufacturerID);
                 setIsFontLoaded(true);
             }).catch((error) => {
                 console.error('Error fetching order:', error);
@@ -61,26 +67,57 @@ const OrderAndChecklist = () => {
         navigation.navigate("JOURNEY", { orderId: orderId });
     };
 
-    const completeAssurance = () => {
-        setRefreshing(true);
-        ItemOrderService.updateItemOrderById(orderId, { status: "Assured" , itemQA: qualityAttributes})
-        .then((res) => {
-            console.log(res.data);
-        }).catch((error) => {
-            console.error('Error updating order:', error);
-        });
-        setTimeout(() => {
-            ItemOrderService.getItemOrderById(orderId)
-            .then((res) => {
-                setOrder(res.data);
-                setQualityAttributes(res.data.itemQA);
-                setIsFontLoaded(true);
-            }).catch((error) => {
-                console.error('Error fetching order:', error);
-            });
-            setRefreshing(false);
-          }, 2000);
+    async function HandlePoints() {
+
+        let updatedPoints = 0;
+        let updatedCount = "down";
+
+        qualityAttributes.forEach((attribute) => {
+            if (attribute.status === "Checked") {
+              updatedPoints += 10;
+            } else if (attribute.status === "Defect") {
+              updatedPoints -= 10;
+            }
+          });
         
+          // Update the count based on the updatedPoints value
+          if (updatedPoints > 0) {
+            updatedCount = "up";
+          }
+        
+          // Create pointsData object
+          const pointsData = {
+            points: updatedPoints,
+            count: updatedCount,
+          };
+        
+          // Log pointsData for debugging
+          console.log(pointsData);
+        
+          // Assuming these are asynchronous operations (e.g., API calls), use try-catch
+          try {
+            // Make the API call
+            const res = await ManufacturerService.handleLevelManufacturer(manufacturerID, pointsData);
+            console.log(res.data);
+            if(res.data.level > order.manufacturer.level){
+                alert("Congratulations!!! You have Levelled Up to " + res.data.level + "!");
+            }
+            else if(res.data.level < order.manufacturer.level){
+                alert("Level Down!");
+            }
+            else if(updatedCount === "up"){
+                alert(updatedPoints + " Points Gained!");
+            }
+            else if(updatedCount === "down"){
+                alert(-(updatedPoints) + " Points Lost!");
+            }
+          } catch (error) {
+            console.error('Error setting points:', error);
+          }
+        
+          // Update the state with the new points and count
+          setPoints(updatedPoints);
+          setCount(updatedCount);
     };
     if (!isFontLoaded) {
         return (
@@ -153,7 +190,7 @@ const OrderAndChecklist = () => {
                                     />
                                 )}
                                 <Text style={styles.qclCell}>  {attribute.qaDescription}</Text>
-                                <View style={styles.valueCell}>
+                                {/* <View style={styles.valueCell}>
                                     {attribute.status === "Pending" || attribute.status === "Checked"? (
                                         <SlateButton    title="Mark as Defect" onPress={() => navigation.navigate("MarkAsDefect", { orderId: orderId, attributeId: attribute._id })} />
                                     ) : (
@@ -162,11 +199,17 @@ const OrderAndChecklist = () => {
                                             onPress={() => toggleQualityAttributeStatus(attribute._id)}
                                         />
                                     )}
-                                </View>
+                                </View> */}
                             </View>
                         ))}
                     </View>
-                    <GreenButton style={styles.confirmBtn} title="Complete Assurance" onPress={completeAssurance} />
+                    {order.status === "Assured" ? (
+                        <GreenButton style={styles.confirmBtn} title="Assign Quality Points" onPress={HandlePoints} />
+                    ) : (
+                        <GreenButton style={styles.confirmBtn} title="Cannot assign Quality Points" onPress={HandlePoints} />
+                    )
+                    }
+                    
                 </View>
             </View>
         </ScrollView>
