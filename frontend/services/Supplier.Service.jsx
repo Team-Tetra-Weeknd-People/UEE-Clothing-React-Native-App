@@ -49,8 +49,8 @@ export const loginSupplier = (data) => {
   });
 };
 
-export const handleLevelSupplier = (data) => {
-  return axios.post(url.SUPPLIER_HANDLE_LEVEL_URL, data, {
+export const handleLevelSupplier = (id, data) => {
+  return axios.post(url.SUPPLIER_HANDLE_LEVEL_URL(id), data, {
     headers: {
       "Content-Type": "application/json",
     },
