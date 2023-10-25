@@ -7,6 +7,8 @@ import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import MaterialOrderService from "../../../../services/MaterialOrder.Service";
 import SupplierService from "../../../../services/Supplier.Service";
+import axios, { Axios } from "axios";
+
 
 const OrderAndChecklist = () => {
     const [refreshing, setRefreshing] = useState(false);
@@ -20,7 +22,7 @@ const OrderAndChecklist = () => {
                 setSupplierID(res.data.supplierID);
                 setIsFontLoaded(true);
             }).catch((error) => {
-                console.error('Error fetching refreshing order:', error);
+                console.error('Error fetching order:', error);
             });
       setTimeout(() => {
         setRefreshing(false);
@@ -39,7 +41,8 @@ const OrderAndChecklist = () => {
     const [count, setCount] = useState("");
 
     useEffect(() => {
-        MaterialOrderService.getMaterialOrder(orderId)
+        axios
+            .get(`http://localhost:8080/api/materialOrders/getOne/${orderId}`)
             .then((res) => {
                 setOrder(res.data);
                 setQualityAttributes(res.data.materialQA || []);
@@ -48,6 +51,15 @@ const OrderAndChecklist = () => {
             }).catch((error) => {
                 console.error('Error fetching order:', error);
             });
+        // MaterialOrderService.getMaterialOrder(orderId)
+        //     .then((res) => {
+        //         setOrder(res.data);
+        //         setQualityAttributes(res.data.materialQA || []);
+        //         setSupplierID(res.data.supplierID);
+        //         setIsFontLoaded(true);
+        //     }).catch((error) => {
+        //         console.error('Error fetching order:', error);
+        //     });
     }, [orderId]);
 
     const toggleQualityAttributeStatus = (attributeId) => {
@@ -99,6 +111,18 @@ const OrderAndChecklist = () => {
             // Make the API call
             const res = await SupplierService.handleLevelSupplier(supplierID, pointsData);
             console.log(res.data);
+            if(res.data.level > order.supplier.level){
+                alert("Congratulations!!! You have Levelled Up to " + res.data.level + "!");
+            }
+            else if(res.data.level < order.supplier.level){
+                alert("Level Down!");
+            }
+            else if(updatedCount === "up"){
+                alert(updatedPoints + " Points Gained! Only " + (100 - res.data.points) + " Points left to level " + (res.data.level + 1) + "!");
+            }
+            else if(updatedCount === "down"){
+                alert(-(updatedPoints) + " Points Lost! Need " + (100 - res.data.points) + " Points to level " + (res.data.level + 1) + "!");
+            }
           } catch (error) {
             console.error('Error setting points:', error);
           }
@@ -121,22 +145,21 @@ const OrderAndChecklist = () => {
           }>
             <View style={styles.headerContainer}>
                 <Text style={styles.title}>ORDER ID :</Text>
-                <GreenButton title="Order Journey" onPress={toOrderJourney} />
+                {/* <GreenButton title="Order Journey" onPress={toOrderJourney} /> */}
+                <Text style={styles.idText}>{orderId} </Text>
             </View>
-            <Text style={styles.idText}>{orderId} </Text>
+            
             <View style={{flexDirection: 'row', marginBottom: 4, justifyContent: "space-between", alignContent: 'center'}}>
             <Text style={styles.title}>ORDER ITEM :</Text>
             <Text style={styles.nameText}>{order.item.name} </Text></View>
             {/* Headers */}
             <View style={styles.tableHeader}>
-                <Text style={styles.manufacturerHeader}>MANUFACTURER</Text>
                 <Text style={styles.supplierHeader}>SUPPLIER</Text>
                 <Text style={styles.valueHeader}>VALUE</Text>
                 <Text style={styles.statusHeader}>STATUS</Text>
             </View>
             {/* Body */}
             <View style={styles.tableRow}>
-                <Text style={styles.manufacturerCell}>{order.manufacturer.companyName}</Text>
                 <Text style={styles.supplierCell}>{order.supplier.companyName}</Text>
                 <Text style={styles.dollarCell}>
                    ${order.totalPrice}
@@ -194,7 +217,7 @@ const OrderAndChecklist = () => {
                     {order.status === "Assured" ? (
                         <GreenButton style={styles.confirmBtn} title="Assign Quality Points" onPress={HandlePoints} />
                     ) : (
-                        <GreenButton style={styles.confirmBtn} title="Cannot assign Quality Points" onPress={HandlePoints} />
+                        <Text></Text>
                     )
                     }
                     
@@ -215,6 +238,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         fontFamily: "Montserrat-Regular",
+        paddingTop: 30,
     },
     headerContainer: {
         flexDirection: "row",
@@ -223,16 +247,16 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: "Montserrat-Bold",
-        fontSize: 24,
+        fontSize: 20,
     },
     idText: {
         fontFamily: "Montserrat-SemiBold",
-        fontSize: 18,
+        fontSize: 16,
         marginBottom: 4,
     },
     nameText: {
         fontFamily: "Montserrat-SemiBold",
-        fontSize: 18,
+        fontSize: 16,
         paddingTop: 5,
     },
     tableHeader: {
@@ -241,6 +265,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         borderBottomWidth: 0.9,
         borderBottomColor: "#14D2B8",
+        marginTop: 20,
     },
     manufacturerHeader: {
         flex: 3, // Adjusted flex value
@@ -337,13 +362,15 @@ const styles = StyleSheet.create({
         elevation: 5,
         width: "100%",
         minHeight: 100,
-        padding: 20
+        padding: 20,
+       
     },
     qclTable: {
         paddingTop: 10,
         borderColor: "black",
         borderRadius: 10,
         width: "100%",
+        paddingLeft: 80,
     },
     qclTableRow: {
         flexDirection: "row",
@@ -354,7 +381,7 @@ const styles = StyleSheet.create({
     },
     qclCell: {
         flex: 3, // Adjusted flex value
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: "Montserrat-SemiBold",
     },
     valueCell: {
