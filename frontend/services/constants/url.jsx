@@ -66,7 +66,8 @@ export const MATERIAL_QA_ITEM_URL = (id) =>
   `${BASE_URL}/materialQAs/materialID/${id}`;
 
 export const MATERIAL_QA_COMPLAINTS_URL = `${BASE_URL}/materialComplaints`;
-export const MATERIAL_QA_COMPLAINTS_ID_URL = `${BASE_URL}/materialComplaints/`;
+export const MATERIAL_QA_COMPLAINTS_ID_URL = (id) =>
+  `${BASE_URL}/materialComplaints/${id}`;
 export const MATERIAL_QA_COMPLAINTS_GETONE_URL = (id) =>
   `${BASE_URL}/materialComplaints/getOne/${id}`;
 export const MATERIAL_QA_COMPLAINTS_ORDER_URL = (id) =>
