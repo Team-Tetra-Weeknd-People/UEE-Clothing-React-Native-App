@@ -119,6 +119,25 @@ export const getItemOrder = async (req, res) => {
       itemOrderID: itemOrder._id,
     });
     itemOrder.QAComplain = QAComplain;
+
+    //materialOrder
+    const materialOrder = await MaterialOrder.find({
+      _id: itemOrder.materialOrderID,
+    });
+    itemOrder.materialOrder = materialOrder[0];
+
+    //materialQA
+    const materialQA = await MaterialQA.find({
+      materialID: itemOrder.materialOrder.materialID,
+    });
+    itemOrder.materialQA = materialQA;
+
+    //materialQAComplaint
+    const materialQAComplaint = await MaterialQAComplain.find({
+      materialOrderID: itemOrder.materialOrderID,
+    });
+    itemOrder.materialQAComplaint = materialQAComplaint;
+
     res.status(200).json(itemOrder);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -227,6 +246,24 @@ export const getItemOrdersByManufacturerID = async (req, res) => {
         itemOrderID: itemOrders[i]._id,
       });
       itemOrders[i].QAComplain = QAComplain;
+
+      //materialOrder
+      const materialOrder = await MaterialOrder.find({
+        _id: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialOrder = materialOrder[0];
+
+      //materialQA
+      const materialQA = await MaterialQA.find({
+        materialID: itemOrders[i].materialOrder.materialID,
+      });
+      itemOrders[i].materialQA = materialQA;
+
+      //materialQAComplaint
+      const materialQAComplaint = await MaterialQAComplain.find({
+        materialOrderID: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialQAComplaint = materialQAComplaint;
     }
     res.status(200).json(itemOrders);
   } catch (error) {
@@ -278,6 +315,24 @@ export const getItemOrdersByStatus = async (req, res) => {
         itemOrderID: itemOrders[i]._id,
       });
       itemOrders[i].QAComplain = QAComplain;
+
+      //materialOrder
+      const materialOrder = await MaterialOrder.find({
+        _id: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialOrder = materialOrder[0];
+
+      //materialQA
+      const materialQA = await MaterialQA.find({
+        materialID: itemOrders[i].materialOrder.materialID,
+      });
+      itemOrders[i].materialQA = materialQA;
+
+      //materialQAComplaint
+      const materialQAComplaint = await MaterialQAComplain.find({
+        materialOrderID: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialQAComplaint = materialQAComplaint;
     }
     res.status(200).json(itemOrders);
   } catch (error) {
@@ -332,6 +387,24 @@ export const getItemOrdersByManufacturerIDAndStatus = async (req, res) => {
         itemOrderID: itemOrders[i]._id,
       });
       itemOrders[i].QAComplain = QAComplain;
+
+      //materialOrder
+      const materialOrder = await MaterialOrder.find({
+        _id: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialOrder = materialOrder[0];
+
+      //materialQA
+      const materialQA = await MaterialQA.find({
+        materialID: itemOrders[i].materialOrder.materialID,
+      });
+      itemOrders[i].materialQA = materialQA;
+
+      //materialQAComplaint
+      const materialQAComplaint = await MaterialQAComplain.find({
+        materialOrderID: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialQAComplaint = materialQAComplaint;
     }
     res.status(200).json(itemOrders);
   } catch (error) {
@@ -383,6 +456,24 @@ export const getItemOrdersBySellerID = async (req, res) => {
         itemOrderID: itemOrders[i]._id,
       });
       itemOrders[i].QAComplain = QAComplain;
+
+      //materialOrder
+      const materialOrder = await MaterialOrder.find({
+        _id: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialOrder = materialOrder[0];
+
+      //materialQA
+      const materialQA = await MaterialQA.find({
+        materialID: itemOrders[i].materialOrder.materialID,
+      });
+      itemOrders[i].materialQA = materialQA;
+
+      //materialQAComplaint
+      const materialQAComplaint = await MaterialQAComplain.find({
+        materialOrderID: itemOrders[i].materialOrderID,
+      });
+      itemOrders[i].materialQAComplaint = materialQAComplaint;
     }
     res.status(200).json(itemOrders);
   } catch (error) {
