@@ -5,22 +5,22 @@ import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
-import ItemOrderService from "../../../../services/ItemOrder.Service";
-import ManufacturerService from "../../../../services/Manufacturer.Service";
+import MaterialOrderService from "../../../../services/MaterialOrder.Service";
+import SupplierService from "../../../../services/Supplier.Service";
 
 const OrderAndChecklist = () => {
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
       setRefreshing(true);
-      ItemOrderService.getItemOrderById(orderId)
+      MaterialOrderService.getMaterialOrder(orderId)
             .then((res) => {
                 setOrder(res.data);
-                setQualityAttributes(res.data.itemQA || []);
-                setManufacturerID(res.data.manufacturerID);
+                setQualityAttributes(res.data.materialQA || []);
+                setSupplierID(res.data.supplierID);
                 setIsFontLoaded(true);
             }).catch((error) => {
-                console.error('Error fetching order:', error);
+                console.error('Error fetching refreshing order:', error);
             });
       setTimeout(() => {
         setRefreshing(false);
@@ -34,16 +34,16 @@ const OrderAndChecklist = () => {
 
     const [order, setOrder] = useState({});
     const [qualityAttributes, setQualityAttributes] = useState([]);
-    const [manufacturerID, setManufacturerID] = useState("");
+    const [supplierID, setSupplierID] = useState("");
     const [points, setPoints] = useState(0);
     const [count, setCount] = useState("");
 
     useEffect(() => {
-        ItemOrderService.getItemOrderById(orderId)
+        MaterialOrderService.getMaterialOrder(orderId)
             .then((res) => {
                 setOrder(res.data);
-                setQualityAttributes(res.data.itemQA || []);
-                setManufacturerID(res.data.manufacturerID);
+                setQualityAttributes(res.data.materialQA || []);
+                setSupplierID(res.data.supplierID);
                 setIsFontLoaded(true);
             }).catch((error) => {
                 console.error('Error fetching order:', error);
@@ -97,20 +97,8 @@ const OrderAndChecklist = () => {
           // Assuming these are asynchronous operations (e.g., API calls), use try-catch
           try {
             // Make the API call
-            const res = await ManufacturerService.handleLevelManufacturer(manufacturerID, pointsData);
+            const res = await SupplierService.handleLevelSupplier(supplierID, pointsData);
             console.log(res.data);
-            if(res.data.level > order.manufacturer.level){
-                alert("Congratulations!!! You have Levelled Up to " + res.data.level + "!");
-            }
-            else if(res.data.level < order.manufacturer.level){
-                alert("Level Down!");
-            }
-            else if(updatedCount === "up"){
-                alert(updatedPoints + " Points Gained!");
-            }
-            else if(updatedCount === "down"){
-                alert(-(updatedPoints) + " Points Lost!");
-            }
           } catch (error) {
             console.error('Error setting points:', error);
           }
