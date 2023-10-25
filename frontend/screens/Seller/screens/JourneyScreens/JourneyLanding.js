@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Button, Text, ScrollView, StyleSheet, RefreshControl, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import BigSlateButton from '../../../../components/BigSlateButton';
 import { Ionicons } from '@expo/vector-icons';
 import ItemOrderService from '../../../../services/ItemOrder.Service';
@@ -15,11 +15,13 @@ const JourneyLanding = () => {
     const [isFontLoaded, setIsFontLoaded] = useState(false);
     const [order, setOrder] = useState({});
 
+    const navigation = useNavigation();
     useEffect(() => {
         AsyncStorage.getItem('orderId').then((value) => {
             setOrderId(value);
         });
     }, []);
+   
     const onRefresh = useCallback(() => {
       setRefreshing(true);
       AsyncStorage.getItem('orderId').then((value) => {
@@ -37,18 +39,22 @@ const JourneyLanding = () => {
       }, 2000);
     }, [orderId]);
 
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
+            setIsFontLoaded(false);
         AsyncStorage.getItem('orderId').then((value) => {
             setOrderId(value);
-            ItemOrderService.getItemOrderById(value)
-            .then((res) => {
-                setOrder(res.data);
-                setIsFontLoaded(true);
-            }).catch((error) => {
-                console.error('Error fetching order:', error);
-            });
+            if(value != null) {
+                ItemOrderService.getItemOrderById(value)
+                .then((res) => {
+                    setOrder(res.data);
+                    setIsFontLoaded(true);
+                }).catch((error) => {
+                    console.error('Error fetching order:', error);
+                });
+            }
         });
-    }, []);
+    }, []));
 
     if(orderId == null) {
         return (
@@ -78,7 +84,7 @@ const JourneyLanding = () => {
                     <Text style={styles.supName}>{order.supplier.companyName.toUpperCase()}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <BigSlateButton title="View Checklist" onPress={() => { }} />
+                    <BigSlateButton title="View Checklist" onPress={() => {navigation.navigate('JourneySupplierChecklist', { orderId: orderId});}} />
                 </View>
                 <Text style={styles.underText}>{SUP_UNDER_TEXT.toUpperCase()}</Text>
             </View>
@@ -91,7 +97,7 @@ const JourneyLanding = () => {
                     <Text style={styles.manuName}>{order.manufacturer.companyName.toUpperCase()}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <BigSlateButton title="View Checklist" onPress={() => { }} />
+                    <BigSlateButton title="View Checklist" onPress={() => {navigation.navigate('JourneyManufacturerChecklist', { orderId: orderId});}} />
                 </View>
                 <Text style={styles.underText}>{MANU_UNDER_TEXT.toUpperCase()}</Text>
             </View>
