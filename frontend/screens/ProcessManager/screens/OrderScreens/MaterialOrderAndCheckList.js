@@ -7,7 +7,6 @@ import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import MaterialOrderService from "../../../../services/MaterialOrder.Service";
 import SupplierService from "../../../../services/Supplier.Service";
-import axios, { Axios } from "axios";
 
 
 const OrderAndChecklist = () => {
@@ -41,8 +40,7 @@ const OrderAndChecklist = () => {
     const [count, setCount] = useState("");
 
     useEffect(() => {
-        axios
-            .get(`http://localhost:8080/api/materialOrders/getOne/${orderId}`)
+        MaterialOrderService.getMaterialOrder(orderId)
             .then((res) => {
                 setOrder(res.data);
                 setQualityAttributes(res.data.materialQA || []);
@@ -51,15 +49,6 @@ const OrderAndChecklist = () => {
             }).catch((error) => {
                 console.error('Error fetching order:', error);
             });
-        // MaterialOrderService.getMaterialOrder(orderId)
-        //     .then((res) => {
-        //         setOrder(res.data);
-        //         setQualityAttributes(res.data.materialQA || []);
-        //         setSupplierID(res.data.supplierID);
-        //         setIsFontLoaded(true);
-        //     }).catch((error) => {
-        //         console.error('Error fetching order:', error);
-        //     });
     }, [orderId]);
 
     const toggleQualityAttributeStatus = (attributeId) => {
