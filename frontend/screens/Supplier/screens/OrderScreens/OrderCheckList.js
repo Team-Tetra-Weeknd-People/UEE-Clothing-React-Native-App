@@ -66,46 +66,29 @@ export default function OrderCheckList({ route }) {
                 </View>
 
                 <View style={styles.defectContainer}>
-
-                    <ScrollView style={styles.defectBody}>
+                    <View style={styles.qclBody}>
                         <Text style={styles.qclTopic}>
-                            <FontAwesome5 name="clipboard-list" size={24} color="black" />
-                            &nbsp;&nbsp; QUALITY CHECKLIST
+                            <FontAwesome5 name="exclamation-triangle" size={24} color="black" />
+                            &nbsp;&nbsp; DEFECTS
                         </Text>
-
-                        <ScrollView>
-                            {order.QAComplain.length > 0 && (order.QAComplain.map((item) => {
-                                return (
-                                    <>
-                                        <View style={styles.QCcontainer} key={item._id}>
-                                            <View style={styles.QCrow}>
-                                                <View>
-                                                    <FontAwesome name="times-circle" size={24} color="red" />
-                                                </View>
-                                                <View style={styles.QCcolumn}>
-                                                    <Text style={styles.descriptionText}>{item.complain}</Text>
-                                                </View>
-                                                <View style={styles.QCcolumn}>
-                                                    {/* image */}
-                                                    <Image
-                                                        source={{ uri: item.image }}
-                                                        style={{
-                                                            width: 200, // The initial width
-                                                            height: 100, // The initial height
-                                                            maxWidth: 200, // The maximum width
-                                                            maxHeight: 100, // The maximum height
-
-                                                        }}
-                                                    />
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </>
-                                )
-                            }))}
-                        </ScrollView>
-
-                    </ScrollView>
+                        <View style={styles.qclTable}>
+                            {order.QAComplain.map((attribute) => (
+                                <View style={styles.qclTableRow} key={attribute._id}>
+                                    <Entypo
+                                        name="circle-with-cross"
+                                        size={24}
+                                        color="red"
+                                        marginRight={10}
+                                    />
+                                    {order.materialQA.length > 0 && (order.materialQA.map((qa) => (
+                                        qa._id === attribute.QAid ? (<Text key={qa._id} style={styles.defectName}>{qa.QAName.toUpperCase()} : {qa.QADescription.toUpperCase()}</Text>) : null
+                                    )))}
+                                    <Image source={{ uri: attribute.image }} style={[{ width: 50, height: 50, marginBottom: 10, marginHorizontal: 12, margin: 5, borderWidth: 2, borderColor: 'black' }]} />
+                                    <Text style={styles.defectName}>{attribute.complain}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
         </>
@@ -123,6 +106,30 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         marginBottom: 16,
+    },
+    qclBody: {
+        paddingTop: 15,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        marginVertical: 10,
+        shadowColor: '#14D2B8',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        width: "100%",
+        minHeight: 100,
+        padding: 20
+    },
+    qclTable: {
+        paddingTop: 10,
+        borderColor: "black",
+        borderRadius: 10,
+        width: "100%",
     },
     title: {
         fontFamily: "Montserrat-Bold",
@@ -254,14 +261,14 @@ const styles = StyleSheet.create({
     defectContainer: {
         marginTop: 20,
         width: "100%",
-        minHeight: 100,
+        maxHeight: 150,
         shadowColor: '#14D2B8',
         shadowOffset: {
             width: 10,
-            height: 10,
+            height: 20,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 5,
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
         elevation: 5,
         borderRadius: 10,
     },
@@ -285,5 +292,21 @@ const styles = StyleSheet.create({
     QCcolumn: {
         flex: 1, // Each column takes equal space within the row
         margin: 5, // Adjust margin as needed
+    },
+    qclTableRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+    },
+    qcltable: {
+        minHeight: 100,
+    },
+    defectName: {
+        flex: 3, // Adjusted flex value
+        fontSize: 12,
+        fontFamily: "Montserrat-SemiBold",
+        color: 'red',
     },
 });

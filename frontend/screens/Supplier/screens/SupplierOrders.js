@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import OrderList from './OrderScreens/OrderList';
 import OrderCheckList from './OrderScreens/OrderCheckList';
-import DefectCheck from './OrderScreens/DefectCheck';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +15,6 @@ export default function SupplierOrders() {
             >
                 <Stack.Screen name="OrderList" component={OrderList} />
                 <Stack.Screen name="OrderCheckList" component={OrderCheckList} />
-                <Stack.Screen name="DefectCheck" component={DefectCheck} />
             </Stack.Navigator>
 
         </>
