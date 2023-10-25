@@ -49,8 +49,8 @@ export const loginManufacturer = (data) => {
   });
 };
 
-export const handleLevelManufacturer = (data) => {
-  return axios.post(url.MANUFACTURER_HANDLE_LEVEL_URL, data, {
+export const handleLevelManufacturer = (id, data) => {
+  return axios.post(url.MANUFACTURER_HANDLE_LEVEL_URL(id), data, {
     headers: {
       "Content-Type": "application/json",
     },
