@@ -6,12 +6,8 @@ import { useRoute } from "@react-navigation/native";
 import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import ItemOrderService from "../../../../services/ItemOrder.Service";
-import ItemQAComplaintsService from "../../../../services/ItemQAComplaints.Service";
-import ItemQAService from "../../../../services/ItemQA.service";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const OrderAndChecklist = () => {
-    const [isAllChecked, setIsAllChecked] = useState(false);
+const JourneyManufacturerChecklist = () => {
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
@@ -20,7 +16,6 @@ const OrderAndChecklist = () => {
             .then((res) => {
                 setOrder(res.data);
                 setQualityAttributes(res.data.itemQA);
-                checkStatusOfAllQualityAttributes();
                 setIsFontLoaded(true);
             }).catch((error) => {
                 console.error('Error fetching order:', error);
@@ -49,137 +44,6 @@ const OrderAndChecklist = () => {
             });
     }, [orderId]);
 
-    useEffect(() => {
-        if (qualityAttributes.length > 0) {
-            checkStatusOfAllQualityAttributes();
-        }
-
-    }, [qualityAttributes]);
-
-    const checkStatusOfAllQualityAttributes = () => {
-        let isAllCheckedStat = true;
-        qualityAttributes.forEach((attribute) => {
-            if (attribute.status === "Pending") {
-                isAllCheckedStat = false;
-            }
-        });
-        setIsAllChecked(isAllCheckedStat);
-    };
-
-    const toggleQualityAttributeStatus = (attributeId) => {
-        const updatedAttributes = qualityAttributes.map((attribute) => {
-            if (attribute._id === attributeId) {
-                if (attribute.status === "Pending") {
-                    attribute.status = "Checked";
-                } else if (attribute.status === "Checked") {
-                    attribute.status = "Pending";
-                }
-            }
-            return attribute;
-        });
-        setQualityAttributes(updatedAttributes);
-        checkStatusOfAllQualityAttributes();
-    };
-    const toOrderJourney = async () => {
-        await AsyncStorage.removeItem("orderId");
-        await AsyncStorage.setItem("orderId", orderId).then(() => {
-        navigation.navigate("JOURNEY");
-        });
-    };
-
-    const markAsChecked = (attributeID) => {
-        Alert.alert(
-            "Quality is Okay?",
-            "Are you sure you want to delete the complaint and mark as checked?",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                },
-                {
-                    text: "OK",
-                    onPress: () => { deleteComplaint(attributeID) }
-                },
-            ],
-            { cancelable: false }
-        );
-    };
-
-    const deleteComplaint = (attributeID) => {
-        ItemQAComplaintsService.getItemComplaintByQA(attributeID)
-            .then((res) => {
-                ItemQAComplaintsService.deleteItemComplaint(res.data[0]._id)
-                    .then((res) => {
-                        console.log("deleted");
-                        ItemQAService.updateItemQA(attributeID, {
-                            status: "Checked",
-                        }).then((res) => {
-                            console.log(res.data);
-                            ItemOrderService.getItemOrderById(orderId)
-                                .then((res) => {
-                                    setOrder(res.data);
-                                    setQualityAttributes(res.data.itemQA);
-                                    setIsFontLoaded(true);
-                                }).catch((error) => {
-                                    console.error('Error fetching order:', error);
-                                });
-                        }
-                        ).catch((error) => {
-                            console.error('Error updating complaint:', error);
-                        });
-                    }
-                    ).catch((error) => {
-                        console.error('Error deleting complaint:', error);
-                    });
-            }).catch((error) => {
-                console.error('Error fetching order:', error);
-            });
-    }
-
-    const saveStatusOfQA = () => {
-        setRefreshing(true);
-        ItemOrderService.updateItemOrderById(orderId, { itemQA: qualityAttributes })
-            .then((res) => {
-                console.log(res.data);
-            }).catch((error) => {
-                console.error('Error updating order:', error);
-            });
-        setTimeout(() => {
-            ItemOrderService.getItemOrderById(orderId)
-                .then((res) => {
-                    setOrder(res.data);
-                    setQualityAttributes(res.data.itemQA);
-                    setIsFontLoaded(true);
-                }).catch((error) => {
-                    console.error('Error fetching order:', error);
-                });
-            setRefreshing(false);
-        }, 2000);
-    };
-
-    const completeAssurance = () => {
-        setRefreshing(true);
-        ItemOrderService.updateItemOrderById(orderId, { status: "Assured", itemQA: qualityAttributes })
-            .then((res) => {
-                console.log(res.data);
-            }).catch((error) => {
-                console.error('Error updating order:', error);
-            });
-        setTimeout(() => {
-            ItemOrderService.getItemOrderById(orderId)
-                .then((res) => {
-                    setOrder(res.data);
-                    setQualityAttributes(res.data.itemQA);
-                    setIsFontLoaded(true);
-                }).catch((error) => {
-                    console.error('Error fetching order:', error);
-                });
-            setRefreshing(false);
-        }, 2000);
-
-    };
-
     if (!isFontLoaded) {
         return (
             <View style={styles.loadingContainer}>
@@ -193,28 +57,23 @@ const OrderAndChecklist = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
             <View style={styles.headerContainer}>
-                <Text style={styles.title}>ORDER ID :</Text>
-                <GreenButton title="Order Journey" onPress={toOrderJourney} />
+                <Text style={styles.title}>CHECKLIST REVIEW</Text>
             </View>
-            <Text style={styles.idText}>{orderId} </Text>
-            <View style={{ flexDirection: 'row', marginBottom: 4, justifyContent: "space-between", alignContent: 'center' }}>
-                <Text style={styles.title}>ORDER ITEM :</Text>
-                <Text style={styles.nameText}>{order.item.name} </Text></View>
+            <Text style={styles.idText}>ORDER ID : {orderId} </Text>
+            <View>
+                <Text style={styles.idText}>ORDER ITEM : {order.item.name}</Text>
+                </View>
             {/* Headers */}
             <View style={styles.tableHeader}>
                 <Text style={styles.manufacturerHeader}>MANUFACTURER</Text>
-                <Text style={styles.supplierHeader}>SUPPLIER</Text>
-                <Text style={styles.valueHeader}>VALUE</Text>
-                <Text style={styles.statusHeader}>STATUS</Text>
+                <Text style={styles.supplierHeader}>EMAIL ADDRESS</Text>
+                <Text style={styles.statusHeader}>LEVEL</Text>
             </View>
             {/* Body */}
             <View style={styles.tableRow}>
                 <Text style={styles.manufacturerCell}>{order.manufacturer.companyName}</Text>
-                <Text style={styles.supplierCell}>{order.supplier.companyName}</Text>
-                <Text style={styles.dollarCell}>
-                    ${order.totalPrice}
-                </Text>
-                <Text style={styles.statusCell}>{order.status}</Text>
+                <Text style={styles.supplierCell}>{order.manufacturer.email}</Text>
+                <Text style={styles.statusCell}>{order.manufacturer.level}</Text>
             </View>
             <View style={styles.qclContainer}>
                 <View style={styles.qclBody}>
@@ -222,6 +81,7 @@ const OrderAndChecklist = () => {
                         <FontAwesome5 name="clipboard-list" size={24} color="black" />
                         &nbsp;&nbsp; QUALITY CHECKLIST
                     </Text>
+                    <Text style={styles.topicText}>SELLER'S REVIEW ON MANUFACTURER'S CHECKLIST</Text>
                     <View style={styles.qclTable}>
                         {qualityAttributes.map((attribute) => (
                             <View style={styles.qclTableRow} key={attribute._id}>
@@ -230,9 +90,6 @@ const OrderAndChecklist = () => {
                                         name="ellipse-outline"
                                         size={24}
                                         color="#7777"
-                                        onPress={() =>
-                                            toggleQualityAttributeStatus(attribute._id)
-                                        }
                                         marginRight={10}
                                     />
                                 ) : attribute.status === "Checked" ? (
@@ -240,9 +97,6 @@ const OrderAndChecklist = () => {
                                         name="checkmark-circle"
                                         size={24}
                                         color="#3CDB7F"
-                                        onPress={() =>
-                                            toggleQualityAttributeStatus(attribute._id)
-                                        }
                                         marginRight={10}
                                     />
                                 ) : (
@@ -253,34 +107,21 @@ const OrderAndChecklist = () => {
                                         marginRight={10}
                                     />
                                 )}
-                                <Text style={styles.qclCell}>{attribute.qaName.toUpperCase()} : {attribute.qaDescription.toUpperCase()}</Text>
-                                <View style={styles.valueCell}>
-                                    {attribute.status === "Pending" || attribute.status === "Checked" ? (
-                                        <SlateButton title="Mark as Defect" onPress={() => navigation.navigate("MarkAsDefect", { orderId: orderId, attributeId: attribute._id })} />
-                                    ) : (
-                                        <SlateButton
-                                            title="Mark as Checked"
-                                            onPress={() => markAsChecked(attribute._id)}
-                                        />
-                                    )}
-                                </View>
+                                <Text style={[{color: attribute.status === "Pending"? "#7777" : 
+                            attribute.status === "Checked" ? "#3CDB7F" : "red"},styles.qclCell]}>{attribute.qaName.toUpperCase()} : {attribute.qaDescription.toUpperCase()}</Text>
                             </View>
                         ))}
                     </View>
-                    {isAllChecked ? (<GreenButton style={styles.confirmBtn} title="Complete Assurance" onPress={completeAssurance} />)
-                        : (<GreenButton style={styles.confirmBtn} title="Save Checklist" onPress={saveStatusOfQA} />)}
 
                 </View>
             </View>
             <View style={styles.defectContainer}>
                 <View style={styles.qclBody}>
-                    <Text style={styles.qclTopic}>
-                        <FontAwesome5 name="exclamation-triangle" size={24} color="black" />
-                        &nbsp;&nbsp; DEFECTS
+                    <Text style={styles.qclTopic}>PROOF OF DEFECTS
                     </Text>
                     <View style={styles.qclTable}>
                         {order.QAComplain.map((attribute) => (
-                            <View style={styles.qclTableRow} key={attribute._id}>
+                            <View style={styles.qclTableRowDefect} key={attribute._id}>
                                 <Entypo
                                     name="circle-with-cross"
                                     size={24}
@@ -292,7 +133,7 @@ const OrderAndChecklist = () => {
                                 ))}
                                 <Image source={{ uri: attribute.image }} style={[{ width: 50, height: 50, marginBottom: 10, marginHorizontal: 12, margin:5 ,borderWidth : 2, borderColor: 'black'}]} />
                                 <View style={styles.valueCell}>
-                                    <SlateButton title="View More" onPress={() => navigation.navigate("MarkAsDefect", { orderId: orderId, attributeId: attribute.QAid })} />
+                                    <SlateButton title="View More" onPress={() => navigation.navigate("JourneyManufacturerDefects", { orderId: orderId, attributeId: attribute.QAid })} />
                                 </View>
                             </View>
                         ))}
@@ -321,28 +162,32 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     title: {
-        fontFamily: "Montserrat-Bold",
+        fontFamily: 'Montserrat-Bold',
         fontSize: 24,
+        letterSpacing: 1.5,
     },
     idText: {
-        fontFamily: "Montserrat-SemiBold",
-        fontSize: 18,
-        marginBottom: 4,
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 14,
+        letterSpacing: 1,
     },
-    nameText: {
-        fontFamily: "Montserrat-SemiBold",
-        fontSize: 18,
-        paddingTop: 5,
+    topicText: {
+        fontFamily: "Montserrat-Regular",
+        fontSize: 12,
+        padding: 5,
+        textAlign: "center",
     },
     tableHeader: {
         flexDirection: "row",
         justifyContent: "space-between",
         paddingVertical: 4,
+        marginTop: 20,
         borderBottomWidth: 0.9,
         borderBottomColor: "#14D2B8",
+        marginHorizontal: 10,
     },
     manufacturerHeader: {
-        flex: 3, // Adjusted flex value
+        flex: 2, // Adjusted flex value
         fontSize: 12,
         fontFamily: "Montserrat-Bold",
         color: "#14D2B8",
@@ -355,15 +200,8 @@ const styles = StyleSheet.create({
         color: "#14D2B8",
         textAlign: "center",
     },
-    valueHeader: {
-        flex: 2, // Adjusted flex value
-        fontSize: 12,
-        fontFamily: "Montserrat-Bold",
-        color: "#14D2B8",
-        textAlign: "center",
-    },
     statusHeader: {
-        flex: 2, // Adjusted flex value
+        flex: 1, // Adjusted flex value
         fontSize: 12,
         fontFamily: "Montserrat-Bold",
         color: "#14D2B8",
@@ -373,10 +211,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 20,
+        paddingVertical: 10,
+        marginHorizontal: 10,
+        marginBottom: 5,
     },
     manufacturerCell: {
-        flex: 3, // Adjusted flex value
+        flex: 2, // Adjusted flex value
         fontSize: 12,
         fontFamily: "Montserrat-SemiBold",
         textAlign: "center",
@@ -387,14 +227,8 @@ const styles = StyleSheet.create({
         fontFamily: "Montserrat-SemiBold",
         textAlign: "center",
     },
-    dollarCell: {
-        flex: 2, // Adjusted flex value
-        fontSize: 12,
-        fontFamily: "Montserrat-SemiBold",
-        textAlign: "center",
-    },
     statusCell: {
-        flex: 2, // Adjusted flex value
+        flex: 1, // Adjusted flex value
         fontSize: 12,
         fontFamily: "Montserrat-SemiBold",
         textAlign: "center",
@@ -420,7 +254,6 @@ const styles = StyleSheet.create({
     qclTopic: {
         fontFamily: "Montserrat-Bold",
         fontSize: 20,
-        paddingBottom: 8,
         textAlign: "center",
         color: '#1D1D27',
         letterSpacing: 1,
@@ -451,8 +284,17 @@ const styles = StyleSheet.create({
     },
     qclTableRow: {
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
+        alignSelf: "center",
+        paddingVertical: 5,
+        paddingHorizontal: 60,
+        borderBottomColor: "#1D1D2722",
+        borderBottomWidth: 1,
+    },
+    qclTableRowDefect: {
+        flexDirection: "row",
+        alignItems: "center",
+        alignSelf: "center",
         paddingVertical: 5,
         paddingHorizontal: 10,
         borderBottomColor: "#1D1D2722",
@@ -478,4 +320,4 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     }
 });
-export default OrderAndChecklist;
+export default JourneyManufacturerChecklist;

@@ -9,7 +9,7 @@ import GreenButton from '../../../../components/GreenButton';
 import {firebase} from '../../../../firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
 
-const MarkAsDefect = ({ route }) => {
+const JourneyManufacturerDefects = ({ route }) => {
   const orderId = route.params.orderId;
   const qualityAttributeId = route.params.attributeId;
   const [qulaityAttributeDetails, setQualityAttributesDetails] = useState({});
@@ -64,86 +64,6 @@ const MarkAsDefect = ({ route }) => {
       });
   }, [qualityAttributeId]);
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const takePhoto = async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result.assets[0].uri);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const uploadImage = async () => {
-    setUploading(true);
-    const response = await fetch(image);
-    const blob = await response.blob();
-    const filename = image.substring(image.lastIndexOf('/') + 1);
-    const storageRef = firebase.storage().ref().child(filename);
-    await storageRef.put(blob);
-
-    try {
-      const url = await storageRef.getDownloadURL();
-      setUploading(false);
-      setImage(url);
-      const data = {
-        QAid: qualityAttributeId,
-        image: url,
-        complain: description,
-        itemOrderID: orderId,
-        itemID: qulaityAttributeDetails.itemID
-      };
-      
-      if (complaint != null) {
-        ItemQAComplaintsService.updateItemComplaint(complaint._id, data)
-          .then((res) => {
-            alert('Complaint Updated Successfully');
-            navgiation.navigate('OrderDetails', { orderId: orderId});
-          })
-          .catch((error) => {
-            console.error('Error fetching orders:', error);
-          });
-      } else {
-        console.log('else ----------------------------------');
-        console.log(data);
-        ItemQAComplaintsService.createItemComplaint(data).then((res) => {
-          ItemQAService.updateItemQA(qualityAttributeId, {
-            status: 'Defect',
-          }).then((res) => {
-            alert('Complaint Created Successfully');
-            navgiation.navigate('OrderDetails', { orderId: orderId});
-          }
-          ).catch((error) => {
-            console.error('Error Creating Complaint:', error);
-          });
-        });
-        
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   if (!isFontLoaded) {
     return (
@@ -159,7 +79,12 @@ const MarkAsDefect = ({ route }) => {
       <Text style={styles.title}>DEFECT</Text>
       <Text style={styles.subTitle}>ORDER ID : {orderId}</Text>
       <View style={styles.photoContainer}>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom: image ? 10 : 0 }}>
+      <Text style={styles.defectHeading}>DEFECT : {complaint._id}</Text>
+        <Text style={styles.topicText}>SELLER'S REVIEW ON MANUFACTURER'S CHECKLIST</Text>
+        {image ?
+            <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15, borderWidth : 5, borderColor: 'black'}} />
+          : <Ionicons name="image-outline" size={200} color="black" style={{ alignSelf: 'center' }} />}
+        <View style={{ flexDirection: 'row', justifyContent: 'center'}}>
           <Entypo
             name="circle-with-cross"
             size={20}
@@ -169,33 +94,13 @@ const MarkAsDefect = ({ route }) => {
           <Text style={styles.defectHeading}>
             {qulaityAttributeDetails.qaName.toUpperCase()} : {qulaityAttributeDetails.qaDescription.toUpperCase()}</Text>
         </View>
-        {image ?
-            <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15, borderWidth : 5, borderColor: 'black'}} />
-          : <Ionicons name="image-outline" size={200} color="black" style={{ alignSelf: 'center' }} />}
-        
       </View>
       <View>
-      <Text style={styles.noImageText}>CAPTURE PROOF</Text>
-      <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.picBtns} onPress={takePhoto}>
-            <Ionicons name="camera" size={50} color="#14D2B8" style={{ alignSelf: 'center', marginHorizontal: 5 }} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.picBtns} onPress={pickImage}>
-            <Ionicons name="image" size={50} color="#14D2B8" style={{ alignSelf: 'center', marginHorizontal: 5 }} />
-          </TouchableOpacity>
-        </View>
+      
       </View>
       <View style={styles.photoContainer}><Text style={styles.subTitle}>COMPLAINT DESCRIPTION</Text>
-        <TextInput
-        style={styles.descriptionInput}
-        value={description}
-        placeholder="Enter Complaint Description"
-        onChangeText={text => setDescription(text)}
-        multiline={true}
-        numberOfLines={4}
-        textAlignVertical="top"
-      /></View>
-      <GreenButton style={{width: 'auto', alignSelf: 'center' , marginVertical: 10, marginBottom: 50}} title="SUBMIT DEFECT" onPress={() => {uploadImage()}} />
+        <Text
+        style={styles.descriptionInput}>{description}</Text></View>
     </ScrollView>
   );
 };
@@ -221,6 +126,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginVertical: 2,
   },
+  topicText: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 10,
+    textAlign: "center",
+    marginBottom: 10,
+    letterSpacing: 1,
+},
   photoContainer: {
     paddingTop: 5,
     backgroundColor: '#fff',
@@ -269,13 +181,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   descriptionInput: {
-    borderWidth: 1,
-    borderColor: '#ccc9',
-    borderRadius: 5,
-    padding: 10,
     marginVertical: 5,
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'Montserrat-Regular',
     color: '#1D1D27',
   },
 });
-export default MarkAsDefect;
+export default JourneyManufacturerDefects;

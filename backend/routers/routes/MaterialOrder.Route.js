@@ -20,5 +20,9 @@ router.get(
   "/supplierID/:supplierID/status/:status",
   MaterialOrderController.getMaterialOrdersBySupplierIDAndStatus
 );
+router.get(
+  "/manufacturerID/:id",
+  MaterialOrderController.getMaterialOrdersByManufacturerID
+);
 
 export default router;

@@ -1,13 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import GreenButton from '../../../components/GreenButton';
 import { useNavigation } from '@react-navigation/core';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import ItemOrderService from '../../../services/ItemOrder.Service';
+import MaterialOrderService from '../../../services/MaterialOrder.Service';
+import ManufacturerService from '../../../services/Manufacturer.Service';
 
 export default function ManufacturerDashboard() {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState('ongoing');
+  const [activeTab, setActiveTab] = useState('received');
+
+  const [placedOrders, setPlacedOrders] = useState([]);
+  const [receivedOrders, setReceivedOrders] = useState([]);
+  const [manufacturer, setManufacturer] = useState({});
+
+  useEffect(() => {
+    try {
+      AsyncStorage.getItem('id').then((value) => {
+        ItemOrderService.getItemOrderByManufacturerId(value)
+          .then((value) => {
+            setPlacedOrders(value.data || []);
+          })
+          .catch((error) => {
+            console.error('Error fetching orders:', error);
+          });
+        MaterialOrderService.getMaterialOrderByManufacturer(value)
+          .then((value) => {
+            setReceivedOrders(value.data || []);
+          })
+          .catch((error) => {
+            console.error('Error fetching orders:', error);
+          });
+
+        ManufacturerService.getManufacturer(value)
+          .then((value) => {
+            setManufacturer(value.data || {});
+          })
+          .catch((error) => {
+            console.error('Error fetching orders:', error);
+          });
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
 
   const starIcons = [];
   for (let i = 1; i <= 5; i++) {
@@ -18,32 +58,14 @@ export default function ManufacturerDashboard() {
     );
   }
 
-  function table(status) {
-    return (
-      <>
-        <View style={styles.table}>
-          {/* Data rows */}
-          <View style={styles.row}>
-            <Text style={styles.cell}>{status},</Text>
-            <Text style={styles.cell}>Row 1, Col 2</Text>
-            <Text style={styles.cell}>Row 1, Col 3</Text>
-          </View>
 
-          <View style={styles.row}>
-            <Text style={styles.cell}>Row 2, Col 1</Text>
-            <Text style={styles.cell}>Row 2, Col 2</Text>
-            <Text style={styles.cell}>Row 2, Col 3</Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.cell}>Row 3, Col 1</Text>
-            <Text style={styles.cell}>Row 3, Col 2</Text>
-            <Text style={styles.cell}>Row 3, Col 3</Text>
-          </View>
-        </View>
-      </>
-    )
-  };
+  function goToOrders() {
+    if (activeTab === 'received') {
+      navigation.navigate('ReceivedOrderList');
+    } else {
+      navigation.navigate('PlacedOrderList');
+    }
+  }
 
 
   return (
@@ -58,38 +80,60 @@ export default function ManufacturerDashboard() {
               <TouchableOpacity
                 style={[
                   styles.tabItem,
-                  activeTab === 'ongoing' && styles.activeTab,
+                  activeTab === 'received' && styles.activeTab,
                 ]}
-                onPress={() => setActiveTab('ongoing')}
+                onPress={() => setActiveTab('received')}
               >
-                <Text style={styles.tabText}>Ongoing Orders</Text>
+                <Text style={styles.tabText}>Received Orders</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[
                   styles.tabItem,
-                  activeTab === 'completed' && styles.activeTab,
+                  activeTab === 'placed' && styles.activeTab,
                 ]}
-                onPress={() => setActiveTab('completed')}
+                onPress={() => setActiveTab('placed')}
               >
-                <Text style={styles.tabText}>Completed Orders</Text>
+                <Text style={styles.tabText}>Placed Orders</Text>
               </TouchableOpacity>
             </View>
 
             {/* Content for the active tab goes here */}
-            {activeTab === 'ongoing' ? (
+            {activeTab === 'received' ? (
               // Content for the "Ongoing Orders" tab
               <>
-                {table("ongoing ")}
+                <View style={styles.table}>
+                  {/* Data rows */}
+                  {placedOrders.length > 0 && placedOrders.slice(0, 3).map((order, index) => {
+                    return (
+                      <View key={index} style={styles.row}>
+                        <Text style={styles.cellMain}>{order.seller.companyName}</Text>
+                        <Text style={styles.cell}>$ {order.totalPrice}</Text>
+                        <Text style={styles.cellStatus}>{order.status}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
               </>
             ) : (
               // Content for the "Completed Orders" tab
               <>
-                {table("completed")}
+                <View style={styles.table}>
+                  {/* Data rows */}
+                  {receivedOrders.length > 0 && receivedOrders.slice(0, 3).map((order, index) => {
+                    return (
+                      <View key={index} style={styles.row}>
+                        <Text style={styles.cellMain}>{order.supplier.companyName}</Text>
+                        <Text style={styles.cell}>$ {order.totalPrice}</Text>
+                        <Text style={styles.cell}>{order.status}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
               </>
             )}
           </View>
-          <GreenButton style={styles.viewOrdersButton} title="View Orders" onPress={() => { navigation.navigate('Orders') }} />
+          <GreenButton style={styles.viewOrdersButton} title="View Orders" onPress={goToOrders} />
         </View>
 
         {/* profile brief */}
@@ -102,9 +146,9 @@ export default function ManufacturerDashboard() {
               <FontAwesome name="user-circle" size={55} color="black" style={{ marginTop: 10 }} />
             </View>
             <View>
-              <Text style={styles.profileMainText}>First Name + Last Name</Text>
-              <Text style={styles.profileSubText}>Email</Text>
-              <Text style={styles.profileSubText}>Shop Name</Text>
+              <Text style={styles.profileMainText}>{manufacturer.fname} {manufacturer.lname}</Text>
+              <Text style={styles.profileSubText}>{manufacturer.email} </Text>
+              <Text style={styles.profileSubText}>{manufacturer.companyName} </Text>
             </View>
             <View style={styles.column}>
               <GreenButton style={styles.viewOrdersButton} title="PROFILE" onPress={() => { navigation.navigate('Profile') }} />
@@ -120,7 +164,7 @@ export default function ManufacturerDashboard() {
               <Text style={styles.levelTitle}>Level</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <MaterialIcons name="score" size={40} color="#14D2B8" />
-                <Text style={{ fontSize: 20, marginLeft: 10 }}>Level No.</Text>
+                <Text style={{ fontSize: 20, marginLeft: 10 }}>{manufacturer.level} </Text>
               </View>
             </View>
 
@@ -130,7 +174,7 @@ export default function ManufacturerDashboard() {
               </View>
               <View style={styles.ratingContainer}>
                 <Text style={styles.ratingTitle}>Rating</Text>
-                <Text style={styles.ratingNo}>4.5</Text>
+                <Text style={styles.ratingNo}>{manufacturer.rating}</Text>
               </View>
               <View style={styles.ratingStar}>
                 {starIcons}
@@ -328,4 +372,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 13,
   },
+  cellMain: {
+    flex: 3,
+    fontFamily: 'Montserrat-SemiBold',
+  },
+  cellStatus: {
+    padding: 10,
+    flex: 2,
+    fontFamily: 'Montserrat-SemiBold',
+  }
 });

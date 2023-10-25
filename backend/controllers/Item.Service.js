@@ -60,8 +60,8 @@ export const updateItem = async (req, res) => {
   const { id } = req.params;
   const item = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send("No item with that id");
+  if (!Item.findById(req.params.id))
+    return res.status(404).send("No itemQAComplain with that id");
 
   const updatedItem = await Item.findByIdAndUpdate(id, item, { new: true });
   res.json(updatedItem);
@@ -71,8 +71,8 @@ export const updateItem = async (req, res) => {
 export const deleteItem = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send("No item with that id");
+  if (!Item.findById(req.params.id))
+    return res.status(404).send("No itemQAComplain with that id");
 
   await Item.findByIdAndRemove(id);
 

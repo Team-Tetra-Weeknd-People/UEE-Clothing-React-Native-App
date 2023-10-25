@@ -43,7 +43,7 @@ export const updateManufacturer = async (req, res) => {
   const { id } = req.params;
   const manufacturer = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!Manufacturer.findById(req.params.id))
     return res.status(404).send("No manufacturer with that id");
 
   const updatedManufacturer = await Manufacturer.findByIdAndUpdate(
@@ -60,7 +60,7 @@ export const updateManufacturer = async (req, res) => {
 export const deleteManufacturer = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!Manufacturer.findById(req.params.id))
     return res.status(404).send("No manufacturer with that id");
 
   await Manufacturer.findByIdAndRemove(id);

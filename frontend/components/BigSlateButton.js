@@ -17,8 +17,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 13,
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 15,
+    marginHorizontal: 10,
   },
 });
 

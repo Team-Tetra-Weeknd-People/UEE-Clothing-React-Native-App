@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import GreenButton from '../../../components/GreenButton';
 import { useNavigation } from '@react-navigation/core';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import MaterialOrderService from '../../../services/MaterialOrder.Service';
+import SupplierService from '../../../services/Supplier.Service';
 
 export default function SupplierDashboard() {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState('ongoing');
+  const [activeTab, setActiveTab] = useState('completed');
+
+  const [orders, setOrders] = useState([]);
+  const [supplier, setSupplier] = useState({});
 
   const starIcons = [];
   for (let i = 1; i <= 5; i++) {
@@ -18,33 +25,16 @@ export default function SupplierDashboard() {
     );
   }
 
-  function table(status) {
-    return (
-      <>
-        <View style={styles.table}>
-          {/* Data rows */}
-          <View style={styles.row}>
-            <Text style={styles.cell}>{status},</Text>
-            <Text style={styles.cell}>Row 1, Col 2</Text>
-            <Text style={styles.cell}>Row 1, Col 3</Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.cell}>Row 2, Col 1</Text>
-            <Text style={styles.cell}>Row 2, Col 2</Text>
-            <Text style={styles.cell}>Row 2, Col 3</Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.cell}>Row 3, Col 1</Text>
-            <Text style={styles.cell}>Row 3, Col 2</Text>
-            <Text style={styles.cell}>Row 3, Col 3</Text>
-          </View>
-        </View>
-      </>
-    )
-  };
-
+  useEffect(() => {
+    AsyncStorage.getItem('id').then((value) => {
+      MaterialOrderService.getMaterialOrderBySupplier(value).then((response) => {
+        setOrders(response.data);
+      });
+      SupplierService.getSupplier(value).then((response) => {
+        setSupplier(response.data);
+      });
+    });
+  }, []);
 
   return (
 
@@ -60,9 +50,8 @@ export default function SupplierDashboard() {
                   styles.tabItem,
                   activeTab === 'ongoing' && styles.activeTab,
                 ]}
-                onPress={() => setActiveTab('ongoing')}
               >
-                <Text style={styles.tabText}>Ongoing Orders</Text>
+
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -85,7 +74,18 @@ export default function SupplierDashboard() {
             ) : (
               // Content for the "Completed Orders" tab
               <>
-                {table("completed")}
+                <View style={styles.table}>
+                  {/* Data rows */}
+                  {orders.length > 0 && orders.slice(0, 3).map((order, index) => {
+                    return (
+                      <View key={index} style={styles.row}>
+                        <Text style={styles.cellMain}>{order.supplier.companyName}</Text>
+                        <Text style={styles.cell}>$ {order.totalPrice}</Text>
+                        <Text style={styles.cell}>{order.status}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
               </>
             )}
           </View>
@@ -102,9 +102,9 @@ export default function SupplierDashboard() {
               <FontAwesome name="user-circle" size={55} color="black" style={{ marginTop: 10 }} />
             </View>
             <View>
-              <Text style={styles.profileMainText}>First Name + Last Name</Text>
-              <Text style={styles.profileSubText}>Email</Text>
-              <Text style={styles.profileSubText}>Shop Name</Text>
+              <Text style={styles.profileMainText}>{supplier.fname} {supplier.lname}</Text>
+              <Text style={styles.profileSubText}>{supplier.email}</Text>
+              <Text style={styles.profileSubText}>{supplier.companyName}</Text>
             </View>
             <View style={styles.column}>
               <GreenButton style={styles.viewOrdersButton} title="PROFILE" onPress={() => { navigation.navigate('PROFILE') }} />
@@ -120,7 +120,7 @@ export default function SupplierDashboard() {
               <Text style={styles.levelTitle}>Level</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <MaterialIcons name="score" size={40} color="#14D2B8" />
-                <Text style={{ fontSize: 20, marginLeft: 10 }}>Level No.</Text>
+                <Text style={{ fontSize: 20, marginLeft: 10 }}>{supplier.level}</Text>
               </View>
             </View>
 
@@ -130,7 +130,7 @@ export default function SupplierDashboard() {
               </View>
               <View style={styles.ratingContainer}>
                 <Text style={styles.ratingTitle}>Rating</Text>
-                <Text style={styles.ratingNo}>4.5</Text>
+                <Text style={styles.ratingNo}>{supplier.rating}</Text>
               </View>
               <View style={styles.ratingStar}>
                 {starIcons}
@@ -328,4 +328,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 13,
   },
+  cellMain: {
+    flex: 3,
+    fontFamily: 'Montserrat-SemiBold',
+  }
 });

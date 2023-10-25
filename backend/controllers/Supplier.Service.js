@@ -43,7 +43,7 @@ export const updateSupplier = async (req, res) => {
   const { id } = req.params;
   const supplier = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!Supplier.findById(req.params.id))
     return res.status(404).send("No supplier with that id");
 
   const updatedSupplier = await Supplier.findByIdAndUpdate(id, supplier, {
@@ -56,7 +56,7 @@ export const updateSupplier = async (req, res) => {
 export const deleteSupplier = async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!Supplier.findById(req.params.id))
     return res.status(404).send("No supplier with that id");
 
   await Supplier.findByIdAndRemove(id);
