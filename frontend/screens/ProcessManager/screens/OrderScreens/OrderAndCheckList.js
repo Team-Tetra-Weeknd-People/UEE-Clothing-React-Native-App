@@ -106,10 +106,10 @@ const OrderAndChecklist = () => {
                 alert("Level Down!");
             }
             else if(updatedCount === "up"){
-                alert(updatedPoints + " Points Gained!");
+                alert(updatedPoints + " Points Gained! Only " + (100 - res.data.points) + " Points left to level " + (res.data.level + 1) + "!");
             }
             else if(updatedCount === "down"){
-                alert(-(updatedPoints) + " Points Lost!");
+                alert(-(updatedPoints) + " Points Lost! Need " + (100 - res.data.points) + " Points to level " + (res.data.level + 1) + "!");
             }
           } catch (error) {
             console.error('Error setting points:', error);
@@ -133,9 +133,10 @@ const OrderAndChecklist = () => {
           }>
             <View style={styles.headerContainer}>
                 <Text style={styles.title}>ORDER ID :</Text>
-                <GreenButton title="Order Journey" onPress={toOrderJourney} />
+                {/* <GreenButton title="Order Journey" onPress={toOrderJourney} /> */}
+                <Text style={styles.idText}>{orderId} </Text>
             </View>
-            <Text style={styles.idText}>{orderId} </Text>
+            
             <View style={{flexDirection: 'row', marginBottom: 4, justifyContent: "space-between", alignContent: 'center'}}>
             <Text style={styles.title}>ORDER ITEM :</Text>
             <Text style={styles.nameText}>{order.item.name} </Text></View>
@@ -206,7 +207,7 @@ const OrderAndChecklist = () => {
                     {order.status === "Assured" ? (
                         <GreenButton style={styles.confirmBtn} title="Assign Quality Points" onPress={HandlePoints} />
                     ) : (
-                        <GreenButton style={styles.confirmBtn} title="Cannot assign Quality Points" onPress={HandlePoints} />
+                        <Text></Text>
                     )
                     }
                     
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         fontFamily: "Montserrat-Regular",
+        paddingTop: 30,
     },
     headerContainer: {
         flexDirection: "row",
@@ -235,16 +237,16 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: "Montserrat-Bold",
-        fontSize: 24,
+        fontSize: 20,
     },
     idText: {
         fontFamily: "Montserrat-SemiBold",
-        fontSize: 18,
+        fontSize: 16,
         marginBottom: 4,
     },
     nameText: {
         fontFamily: "Montserrat-SemiBold",
-        fontSize: 18,
+        fontSize: 16,
         paddingTop: 5,
     },
     tableHeader: {
@@ -253,6 +255,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         borderBottomWidth: 0.9,
         borderBottomColor: "#14D2B8",
+        marginTop: 20,
     },
     manufacturerHeader: {
         flex: 3, // Adjusted flex value
@@ -349,13 +352,15 @@ const styles = StyleSheet.create({
         elevation: 5,
         width: "100%",
         minHeight: 100,
-        padding: 20
+        padding: 20,
+       
     },
     qclTable: {
         paddingTop: 10,
         borderColor: "black",
         borderRadius: 10,
         width: "100%",
+        paddingLeft: 80,
     },
     qclTableRow: {
         flexDirection: "row",
@@ -366,7 +371,7 @@ const styles = StyleSheet.create({
     },
     qclCell: {
         flex: 3, // Adjusted flex value
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: "Montserrat-SemiBold",
     },
     valueCell: {
