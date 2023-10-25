@@ -35,8 +35,8 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false);
   const [selectedType, setSelectedType] = useState("SUPPLIER"); // State to store the selected type
 
-  const [email, setEmail] = useState("randula98@gmail.com");
-  const [password, setPassword] = useState("11111111");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // Define the available user types
   const userTypes = ["SUPPLIER", "MANUFACTURER", "SELLER", "PROCESS MANAGER"];
