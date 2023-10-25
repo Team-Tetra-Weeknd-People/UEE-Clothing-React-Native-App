@@ -42,7 +42,7 @@ export default function ProcessManagerDashboard() {
     .catch((error) => {
         console.error('Error fetching orders:', error);
     });
-}, []);
+}, [manufacturers]);
 
   useEffect(() => {
     SupplierService.getSuppliers()
@@ -52,7 +52,7 @@ export default function ProcessManagerDashboard() {
     .catch((error) => {
         console.error('Error fetching orders:', error);
     });
-  }, []);
+  }, [suppliers]);
 
   const starIcons = [];
   for (let i = 1; i <= 5; i++) {
