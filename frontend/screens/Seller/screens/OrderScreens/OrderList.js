@@ -96,7 +96,7 @@ const OrderList = () => {
                         <Text style={styles.manufacturerCell}>{item.manufacturer.companyName}</Text>
                         <Text style={styles.supplierCell}>{item.supplier.companyName}</Text>
                         <Text style={styles.valueCell}>${item.totalPrice}</Text>
-                        <Text style={styles.statusCell}>{item.status}</Text>
+                        <Text style={[{color : item.status === 'Assured'? "#3CDB7F" : '#FF5B50' },styles.statusCell]}>{item.status.toUpperCase()}</Text>
                     </TouchableOpacity>
                 )}
             />
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     statusCell: {
         flex: 2, // Adjusted flex value
         fontSize: 12,
-        fontFamily: 'Montserrat-SemiBold',
+        fontFamily: 'Montserrat-Bold',
         textAlign: 'center',
     },
 });
