@@ -107,6 +107,8 @@ const ProcessManagerProfile = () => {
 </html>
 `;
 
+const [selectedPrinter, setSelectedPrinter] = React.useState();
+
   const print = async () => {
     // On iOS/android prints the given html. On web prints the HTML from the current page.
     await Print.printAsync({
