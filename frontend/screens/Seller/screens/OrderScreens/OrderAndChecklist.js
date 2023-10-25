@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
-import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl, Alert, Image } from "react-native";
+import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl, Alert, Image, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import GreenButton from "../../../../components/GreenButton";
@@ -9,6 +9,8 @@ import ItemOrderService from "../../../../services/ItemOrder.Service";
 import ItemQAComplaintsService from "../../../../services/ItemQAComplaints.Service";
 import ItemQAService from "../../../../services/ItemQA.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Stars from "../../../../components/Stars";
+import BigSlateButton from "../../../../components/BigSlateButton";
 
 const OrderAndChecklist = () => {
     const [isAllChecked, setIsAllChecked] = useState(false);
@@ -37,7 +39,17 @@ const OrderAndChecklist = () => {
 
     const [order, setOrder] = useState({});
     const [qualityAttributes, setQualityAttributes] = useState([]);
+    const [isStarsModalVisible, setStarsModalVisible] = useState(false);
 
+    // Function to open the Stars modal
+    const openStarsModal = () => {
+        setStarsModalVisible(true);
+    };
+
+    // Function to close the Stars modal
+    const closeStarsModal = () => {
+        setStarsModalVisible(false);
+    };
     useEffect(() => {
         ItemOrderService.getItemOrderById(orderId)
             .then((res) => {
@@ -83,7 +95,7 @@ const OrderAndChecklist = () => {
     const toOrderJourney = async () => {
         await AsyncStorage.removeItem("orderId");
         await AsyncStorage.setItem("orderId", orderId).then(() => {
-        navigation.navigate("JOURNEY");
+            navigation.navigate("JOURNEY");
         });
     };
 
@@ -142,6 +154,7 @@ const OrderAndChecklist = () => {
         ItemOrderService.updateItemOrderById(orderId, { itemQA: qualityAttributes })
             .then((res) => {
                 console.log(res.data);
+                alert("Checklist Saved Successfully");
             }).catch((error) => {
                 console.error('Error updating order:', error);
             });
@@ -163,6 +176,7 @@ const OrderAndChecklist = () => {
         ItemOrderService.updateItemOrderById(orderId, { status: "Assured", itemQA: qualityAttributes })
             .then((res) => {
                 console.log(res.data);
+                openStarsModal();
             }).catch((error) => {
                 console.error('Error updating order:', error);
             });
@@ -269,7 +283,17 @@ const OrderAndChecklist = () => {
                     </View>
                     {isAllChecked ? (<GreenButton style={styles.confirmBtn} title="Complete Assurance" onPress={completeAssurance} />)
                         : (<GreenButton style={styles.confirmBtn} title="Save Checklist" onPress={saveStatusOfQA} />)}
-
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isStarsModalVisible}
+                        onRequestClose={closeStarsModal}
+                    >
+                        <View style={styles.starsModal}>
+                            <Stars />
+                            <BigSlateButton title="Confirm Rating" onPress={closeStarsModal} style={{alignSelf: 'center', marginTop: 10}} />
+                        </View>
+                    </Modal>
                 </View>
             </View>
             <View style={styles.defectContainer}>
@@ -290,7 +314,7 @@ const OrderAndChecklist = () => {
                                 {order.itemQA.map((qa) => (
                                     qa._id === attribute.QAid ? (<Text key={qa._id} style={styles.defectName}>{qa.qaName.toUpperCase()} : {qa.qaDescription.toUpperCase()}</Text>) : null
                                 ))}
-                                <Image source={{ uri: attribute.image }} style={[{ width: 50, height: 50, marginBottom: 10, marginHorizontal: 12, margin:5 ,borderWidth : 2, borderColor: 'black'}]} />
+                                <Image source={{ uri: attribute.image }} style={[{ width: 50, height: 50, marginBottom: 10, marginHorizontal: 12, margin: 5, borderWidth: 2, borderColor: 'black' }]} />
                                 <View style={styles.valueCell}>
                                     <SlateButton title="View More" onPress={() => navigation.navigate("MarkAsDefect", { orderId: orderId, attributeId: attribute.QAid })} />
                                 </View>
@@ -314,6 +338,18 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         fontFamily: "Montserrat-Regular",
+    },
+    starsModal: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor:  "#14D2B8",
+        margin: 20,
+        marginVertical: 300,
+        borderRadius: 20,
+        elevation: 5,
+        boxShadow: '1 1 5px rgba(F, F, F, 0.5)',
+        padding: 15,
     },
     headerContainer: {
         flexDirection: "row",

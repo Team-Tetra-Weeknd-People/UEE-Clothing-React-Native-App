@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Image, Text, View, TextInput, Platform, ScrollView, RefreshControl, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import ItemQAComplaintsService from '../../../../services/ItemQAComplaints.Service';
-import ItemQAService from '../../../../services/ItemQA.service';
-import BigSlateButton from '../../../../components/BigSlateButton';
 import { Entypo, Ionicons } from '@expo/vector-icons';
-import GreenButton from '../../../../components/GreenButton';
-import {firebase} from '../../../../firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
 import MaterialQAService from '../../../../services/MaterialQA.Service';
-import MaterialQAComplaintService from '../../../../services/MaterialQAComplaint.service';
+import MaterialQAComplaintService from '../../../../services/MaterialQAComplaint.Service';
 
 const JourneySupplierDefects = ({ route }) => {
   const orderId = route.params.orderId;
