@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
-import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl, Alert } from "react-native";
+import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl, Alert, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import GreenButton from "../../../../../components/GreenButton";
@@ -99,6 +99,26 @@ export default function OrderCheckList() {
             { cancelable: false }
         );
     };
+
+    const markAsCheckedTick = (attributeid) => {
+        MaterialQAService.updateMaterialQA(attributeid, {
+            status: "Checked",
+        }).then((res) => {
+            // MaterialQAComplaintsService.getMaterialQAComplaintByMaterialOrder(orderId)
+            //     .then((res) => {
+            //         setOrder(res.data);
+            //         setQualityAttributes(res.data.materialQA);
+            //         setIsFontLoaded(true);
+            //     }).catch((error) => {
+            //         console.error('Error fetching order:', error);
+            //     });
+            alert("Marked as Normal");
+            navigation.navigate('PlacedOrderList');
+        }
+        ).catch((error) => {
+            console.error('Error updating complaint:', error);
+        });
+    }
 
     const deleteComplaint = (attribute) => {
         MaterialQAComplaintsService.getMaterialQAComplaintByQA(attribute._id)
@@ -232,9 +252,10 @@ export default function OrderCheckList() {
                                             name="ellipse-outline"
                                             size={24}
                                             color="#7777"
-                                            onPress={() =>
+                                            onPress={() => {
                                                 toggleQualityAttributeStatus(attribute._id)
-                                            }
+                                                markAsCheckedTick(attribute._id)
+                                            }}
                                         />
                                     ) : attribute.status === "Checked" ? (
                                         <Ionicons
@@ -269,6 +290,31 @@ export default function OrderCheckList() {
                         {isAllChecked ? (<GreenButton style={styles.confirmBtn} title="Complete Assurance" onPress={completeAssurance} />)
                             : (<GreenButton style={styles.confirmBtn} title="Save Checklist" onPress={saveStatusOfQA} />)}
 
+                    </View>
+                </View>
+                <View style={styles.defectContainer}>
+                    <View style={styles.qclBody}>
+                        <Text style={styles.qclTopic}>
+                            <FontAwesome5 name="exclamation-triangle" size={24} color="black" />
+                            &nbsp;&nbsp; DEFECTS
+                        </Text>
+                        <View style={styles.qclTable}>
+                            {order.QAComplain.map((attribute) => (
+                                <View style={styles.qclTableRow} key={attribute._id}>
+                                    <Entypo
+                                        name="circle-with-cross"
+                                        size={24}
+                                        color="red"
+                                        marginRight={10}
+                                    />
+                                    {order.materialQA.length > 0 && (order.materialQA.map((qa) => (
+                                        qa._id === attribute.QAid ? (<Text key={qa._id} style={styles.defectName}>{qa.QAName.toUpperCase()} : {qa.QADescription.toUpperCase()}</Text>) : null
+                                    )))}
+                                    <Image source={{ uri: attribute.image }} style={[{ width: 50, height: 50, marginBottom: 10, marginHorizontal: 12, margin: 5, borderWidth: 2, borderColor: 'black' }]} />
+                                    <Text style={styles.defectName}>{attribute.complain}</Text>
+                                </View>
+                            ))}
+                        </View>
                     </View>
                 </View>
             </ScrollView>
@@ -437,5 +483,15 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         marginTop: 20,
         marginBottom: 5,
-    }
+    },
+    defectContainer: {
+        width: "100%",
+        marginBottom: 20,
+    },
+    defectName: {
+        flex: 3, // Adjusted flex value
+        fontSize: 12,
+        fontFamily: "Montserrat-SemiBold",
+        color: 'red',
+    },
 });
