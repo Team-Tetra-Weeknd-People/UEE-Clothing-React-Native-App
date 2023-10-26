@@ -6,7 +6,7 @@ import ItemQAService from '../../../../services/ItemQA.service';
 import BigSlateButton from '../../../../components/BigSlateButton';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import GreenButton from '../../../../components/GreenButton';
-import {firebase} from '../../../../firebaseConfig';
+import { firebase } from '../../../../firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
 
 const MarkAsDefect = ({ route }) => {
@@ -114,12 +114,12 @@ const MarkAsDefect = ({ route }) => {
         itemOrderID: orderId,
         itemID: qulaityAttributeDetails.itemID
       };
-      
+
       if (complaint != null) {
         ItemQAComplaintsService.updateItemComplaint(complaint._id, data)
           .then((res) => {
             alert('Complaint Updated Successfully');
-            navgiation.navigate('OrderDetails', { orderId: orderId});
+            navgiation.navigate('OrderDetails', { orderId: orderId });
           })
           .catch((error) => {
             console.error('Error fetching orders:', error);
@@ -132,13 +132,13 @@ const MarkAsDefect = ({ route }) => {
             status: 'Defect',
           }).then((res) => {
             alert('Complaint Created Successfully');
-            navgiation.navigate('OrderDetails', { orderId: orderId});
+            navgiation.navigate('OrderDetails', { orderId: orderId });
           }
           ).catch((error) => {
             console.error('Error Creating Complaint:', error);
           });
         });
-        
+
       }
     } catch (e) {
       console.log(e);
@@ -170,13 +170,13 @@ const MarkAsDefect = ({ route }) => {
             {qulaityAttributeDetails.qaName.toUpperCase()} : {qulaityAttributeDetails.qaDescription.toUpperCase()}</Text>
         </View>
         {image ?
-            <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15, borderWidth : 5, borderColor: 'black'}} />
+          <Image source={{ uri: image }} style={{ width: 300, height: 300, alignSelf: 'center', marginBottom: 15, borderWidth: 5, borderColor: 'black' }} />
           : <Ionicons name="image-outline" size={200} color="black" style={{ alignSelf: 'center' }} />}
-        
+
       </View>
       <View>
-      <Text style={styles.noImageText}>CAPTURE PROOF</Text>
-      <View style={styles.buttonContainer}>
+        <Text style={styles.noImageText}>CAPTURE PROOF</Text>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.picBtns} onPress={takePhoto}>
             <Ionicons name="camera" size={50} color="#14D2B8" style={{ alignSelf: 'center', marginHorizontal: 5 }} />
           </TouchableOpacity>
@@ -187,15 +187,15 @@ const MarkAsDefect = ({ route }) => {
       </View>
       <View style={styles.photoContainer}><Text style={styles.subTitle}>COMPLAINT DESCRIPTION</Text>
         <TextInput
-        style={styles.descriptionInput}
-        value={description}
-        placeholder="Enter Complaint Description"
-        onChangeText={text => setDescription(text)}
-        multiline={true}
-        numberOfLines={4}
-        textAlignVertical="top"
-      /></View>
-      <GreenButton style={{width: 'auto', alignSelf: 'center' , marginVertical: 10, marginBottom: 50}} title="SUBMIT DEFECT" onPress={() => {uploadImage()}} />
+          style={styles.descriptionInput}
+          value={description}
+          placeholder="Enter Complaint Description"
+          onChangeText={text => setDescription(text)}
+          multiline={true}
+          numberOfLines={4}
+          textAlignVertical="top"
+        /></View>
+      <GreenButton style={{ width: 'auto', alignSelf: 'center', marginVertical: 10, marginBottom: 50 }} title="SUBMIT DEFECT" onPress={() => { uploadImage() }} />
     </ScrollView>
   );
 };

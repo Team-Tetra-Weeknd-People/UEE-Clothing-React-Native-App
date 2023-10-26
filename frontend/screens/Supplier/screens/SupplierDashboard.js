@@ -116,7 +116,7 @@ export default function SupplierDashboard() {
           {/* item + level */}
           <View style={styles.innnerContainer}>
             <View style={styles.column}>
-              <GreenButton style={styles.itemBtn} title="ITEMS" onPress={() => { navigation.navigate('ITEMS') }} />
+              <GreenButton style={styles.itemBtn} title="MATERIAL" onPress={() => { navigation.navigate('MATERIALS') }} />
               <Text style={styles.levelTitle}>Level</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <MaterialIcons name="score" size={40} color="#14D2B8" />
