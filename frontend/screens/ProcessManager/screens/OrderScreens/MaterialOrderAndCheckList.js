@@ -140,7 +140,8 @@ const OrderAndChecklist = () => {
             
             <View style={{flexDirection: 'row', marginBottom: 4, justifyContent: "space-between", alignContent: 'center'}}>
             <Text style={styles.title}>ORDER ITEM :</Text>
-            <Text style={styles.nameText}>{order.item.name} </Text></View>
+            <Text style={styles.nameText}>{order.material.name} </Text>
+            </View>
             {/* Headers */}
             <View style={styles.tableHeader}>
                 <Text style={styles.supplierHeader}>SUPPLIER</Text>
@@ -189,7 +190,7 @@ const OrderAndChecklist = () => {
                                         color="red"
                                     />
                                 )}
-                                <Text style={styles.qclCell}>  {attribute.qaDescription}</Text>
+                                <Text style={styles.qclCell}>{attribute.QAName}:  {attribute.QADescription}</Text>
                                 {/* <View style={styles.valueCell}>
                                     {attribute.status === "Pending" || attribute.status === "Checked"? (
                                         <SlateButton    title="Mark as Defect" onPress={() => navigation.navigate("MarkAsDefect", { orderId: orderId, attributeId: attribute._id })} />
