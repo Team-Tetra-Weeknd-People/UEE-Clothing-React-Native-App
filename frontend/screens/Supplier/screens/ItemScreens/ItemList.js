@@ -43,7 +43,7 @@ export default function ItemList() {
                     <FontAwesome5 name="search" size={18} color="#888" style={styles.searchIcon} />
                     <TextInput
                         style={styles.searchBar}
-                        placeholder="Search Orders"
+                        placeholder="Search Items"
                         value={searchText}
                         onChangeText={(text) => setSearchText(text)}
                     />
