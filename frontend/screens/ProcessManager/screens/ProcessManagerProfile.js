@@ -27,6 +27,8 @@ const ProcessManagerProfile = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [itemOrders, setItemOrders] = useState([]);
   const [materialOrders, setMaterialOrders] = useState([]);
+  const [bestManufacturer, setBestManufacturer] = useState({});
+  const [bestSupplier, setBestSupplier] = useState({});
 
   useEffect(() => {
     try{
@@ -43,9 +45,17 @@ const ProcessManagerProfile = () => {
   }, []);
 
   useEffect(() => {
+    let level = 0;
     ManufacturerService.getManufacturers()
     .then((res) => {
         setManufacturers(res.data);
+        for (let i = 0; i < res.data.length; i++) {
+          const item = res.data[i];
+          if(item.points > level){
+            level = item.points;
+            setBestManufacturer(item); 
+          }
+        }
     })
     .catch((error) => {
         console.error('Error fetching orders:', error);
@@ -53,9 +63,17 @@ const ProcessManagerProfile = () => {
 }, [manufacturers]);
 
   useEffect(() => {
+    let level = 0;
     SupplierService.getSuppliers()
     .then((res) => {
         setSuppliers(res.data);
+        for (let i = 0; i < res.data.length; i++) {
+          const item = res.data[i];
+          if(item.points > level){
+            level = item.points;
+            setBestSupplier(item); 
+          }
+        }
     })
     .catch((error) => {
         console.error('Error fetching orders:', error);
@@ -154,6 +172,7 @@ const [selectedPrinter, setSelectedPrinter] = React.useState();
       `;
     }
     console.log(supplierTable);
+    
 
     const html = `
     <!DOCTYPE html>
@@ -200,6 +219,12 @@ const [selectedPrinter, setSelectedPrinter] = React.useState();
         </tr>
         ${supplierTable}
       </table>
+
+      <h2>Best Manufacturer</h2>
+      ${bestManufacturer.companyName} is in level ${bestManufacturer.level}
+
+      <h2>Best Supplier</h2>
+      ${bestSupplier.companyName} is in level ${bestSupplier.level}
       
       </body>
     </html>

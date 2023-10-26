@@ -7,6 +7,7 @@ import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import ItemOrderService from "../../../../services/ItemOrder.Service";
 import ManufacturerService from "../../../../services/Manufacturer.Service";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderAndChecklist = () => {
     const [refreshing, setRefreshing] = useState(false);
@@ -63,8 +64,11 @@ const OrderAndChecklist = () => {
         });
         setQualityAttributes(updatedAttributes);
     };
-    const toOrderJourney = () => {
-        navigation.navigate("JOURNEY", { orderId: orderId });
+    const toOrderJourney = async () => {
+        await AsyncStorage.removeItem("orderId");
+        await AsyncStorage.setItem("orderId", orderId).then(() => {
+        navigation.navigate("JOURNEY");
+        });
     };
 
     async function HandlePoints() {
@@ -140,6 +144,7 @@ const OrderAndChecklist = () => {
             <View style={{flexDirection: 'row', marginBottom: 4, justifyContent: "space-between", alignContent: 'center'}}>
             <Text style={styles.title}>ORDER ITEM :</Text>
             <Text style={styles.nameText}>{order.item.name} </Text></View>
+            <GreenButton title="Order Journey" onPress={toOrderJourney} />
             {/* Headers */}
             <View style={styles.tableHeader}>
                 <Text style={styles.manufacturerHeader}>MANUFACTURER</Text>
@@ -190,7 +195,7 @@ const OrderAndChecklist = () => {
                                         color="red"
                                     />
                                 )}
-                                <Text style={styles.qclCell}>  {attribute.qaDescription}</Text>
+                                <Text style={styles.qclCell}>{attribute.qaName}:  {attribute.qaDescription}</Text>
                                 {/* <View style={styles.valueCell}>
                                     {attribute.status === "Pending" || attribute.status === "Checked"? (
                                         <SlateButton    title="Mark as Defect" onPress={() => navigation.navigate("MarkAsDefect", { orderId: orderId, attributeId: attribute._id })} />
