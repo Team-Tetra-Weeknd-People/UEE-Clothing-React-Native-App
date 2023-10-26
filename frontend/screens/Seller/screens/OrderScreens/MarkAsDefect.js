@@ -145,7 +145,7 @@ const MarkAsDefect = ({ route }) => {
     }
   };
 
-  if (uploading) {
+  if (!isFontLoaded || uploading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#1D1D27" />

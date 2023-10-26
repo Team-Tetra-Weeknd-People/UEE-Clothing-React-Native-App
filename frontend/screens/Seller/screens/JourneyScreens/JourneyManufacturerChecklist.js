@@ -3,7 +3,6 @@ import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
 import { View, Button, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl, Alert, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
-import GreenButton from "../../../../components/GreenButton";
 import SlateButton from "../../../../components/SlateButton";
 import ItemOrderService from "../../../../services/ItemOrder.Service";
 
